@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es5",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "declaration": true,
+    "strict": true,
+    "declarationDir": "dist",
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "lib": [
+      "es6",
+      "dom",
+      "esnext.array"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "vendor",
+    ".idea",
+    ".vscode",
+    "build",
+    "dist",
+    "**/*.spec.*",
+    "**/*.test.*"
+  ]
+}

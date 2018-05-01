@@ -1,0 +1,43 @@
+{
+  "name": "@pinyin/tween-here",
+  "version": "0.0.1",
+  "description": "The animation library to use when you don't want to bother about animations.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "rm -rf dist && npx tsc",
+    "test": "npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinyin/tween-here.git"
+  },
+  "keywords": [
+    "transform",
+    "CSS"
+  ],
+  "author": "Bo Bao <bob432091@gmail.com> (https://github.com/pinyin)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pinyin/tween-here/issues"
+  },
+  "homepage": "https://github.com/pinyin/tween-here#readme",
+  "dependencies": {
+    "@pinyin/async-weak-map": "0.0.1",
+    "@pinyin/dom": "0.0.2",
+    "@pinyin/frame": "^0.0.2",
+    "@pinyin/maybe": "^0.0.5",
+    "@pinyin/outline": "^0.0.1",
+    "@pinyin/types": "^0.0.1",
+    "tslib": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "jest": "^22.4.3",
+    "ts-jest": "^22.4.4",
+    "typescript": "^2.9.0-dev.20180501"
+  }
+}
