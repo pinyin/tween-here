@@ -4,13 +4,13 @@ The animation library to use when you don't really care about animations.
 
 ------
 
-### Install
+## Install
 
 `npm install --save @pinyin/tween-here`
 
-It should support typescript out of the box. If not, please submit an issue.
+It should support TypeScript out of the box. If not, please submit an issue.
 
-### Usage
+## Usage
 
 ```typescript jsx
 import {tweenHere, tweenExit, getTweenState} from '@pinyin/tween-here'
@@ -41,7 +41,7 @@ Demo is planned. For now, please refer to this [InfiniteList component demo](htt
 
 All animations in the current demo are implemented with this library.
 
-### Design Targets
+## Design Target
 
 [Motions are important](https://material.io/guidelines/motion/material-motion.html#material-motion-why-does-motion-matter).
 
@@ -51,10 +51,10 @@ We've had many web animation solutions that are both precise and powerful, like 
 
 > Just make this element appear smoothly, please. It should be simple.
 
-That's what `tween-here` is designed for. 
+That's what `tween-here` is designed for. It does aim to be a complete animating library, but you should be able to implement most UI motions (like the ones from [Material Design](https://material.io/guidelines/motion/material-motion.html)) with this library.
 
 
-### APIs
+## APIs
 
 The document is not complete yet. Any contributions are welcome.
 
@@ -76,7 +76,7 @@ async function tweenExit(
 ): Promise<void> 
 ```
 
-In general, use `tweenHere` when you want a element to move smoothly, use `tweenExit` when you know an element is being detached from `document` and what it to disappear smoothly.
+In general, use `tweenHere` when you want an element to move smoothly, use `tweenExit` when you know an element is being detached from `document` and want it to disappear smoothly.
 
 TweenState is an object representing the position of an element (relative to viewport):
 ```typescript jsx
@@ -88,23 +88,23 @@ type TweenState = {
     opacity: number
 } 
 ```
-In practise, you may get these numbers from `getBoundingClientRect()` and many other native APIs. 
+In practise, you may get these numbers by using `getBoundingClientRect()` and other native APIs. 
 
-For convenience, this library provides two helper functions, `getTweenState` and `getOriginalTweenState`, to capture the `TweenState` from an existing element. 
+For convenience, this library provides two helper functions, `getTweenState` and `getOriginalTweenState`, to capture the `TweenState` of an existing element. 
 
 ```typescript jsx
 getTweenState(element: HTMLElement): TweenState
 getOriginalTweenState(element: HTMLElement): TweenState
 ```
 
-By using these helper functions and `tweenHere`, you can easily make an element tween smoothly from the position of another element, constructing an visual effect of they are the same element.
+By using these helper functions and `tweenHere`, you can easily make an element tween smoothly from the position of another element, constructing a visual effect of they are the same element.
 
 
-### Notice
+## Notice
 
 This library is very unstable yet, any contributions(code, issue, use cases proposal...) are welcome.
 
-### License
+## License
 
 MIT
 
