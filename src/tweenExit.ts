@@ -1,6 +1,6 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
-import {nextFrame, writePhase} from '@pinyin/frame/lib'
+import {nextFrame, readPhase, writePhase} from '@pinyin/frame/lib'
 import {existing, Maybe, notExisting, nothing} from '@pinyin/maybe'
 import {getOriginOutline, intermediate} from '@pinyin/outline'
 import {isInViewport} from '@pinyin/outline/dist/isInViewport'
@@ -58,6 +58,8 @@ export async function tweenExit(
     existing(nextSibling) && parent.contains(nextSibling) ?
         parent.appendChild(placeholder) :
         parent.insertBefore(placeholder, nextSibling) // FIXME potential capability problem
+
+    await readPhase()
     const current = getOriginOutline(placeholder)
 
     await nextFrame()
