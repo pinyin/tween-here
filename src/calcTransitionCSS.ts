@@ -1,4 +1,5 @@
 import {ms} from '@pinyin/types'
+import {CubicBezierParam} from './CubicBezierParam'
 
 export function calcTransitionCSS(duration: ms, easing: CubicBezierParam): string {
     return `

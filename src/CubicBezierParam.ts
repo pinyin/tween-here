@@ -1,1 +1,1 @@
-type CubicBezierParam = Readonly<[number, number, number, number]>
+export type CubicBezierParam = Readonly<[number, number, number, number]>

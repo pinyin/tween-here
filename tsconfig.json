@@ -4,6 +4,7 @@
     "target": "es5",
     "module": "commonjs",
     "esModuleInterop": true,
+    "inlineSourceMap": true,
     "declaration": true,
     "strict": true,
     "declarationDir": "dist",
@@ -15,14 +16,7 @@
       "esnext.array"
     ]
   },
-  "exclude": [
-    "node_modules",
-    "vendor",
-    ".idea",
-    ".vscode",
-    "build",
-    "dist",
-    "**/*.spec.*",
-    "**/*.test.*"
+  "include": [
+    "index.ts"
   ]
 }

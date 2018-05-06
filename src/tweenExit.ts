@@ -1,12 +1,13 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
-import {nextFrame, readPhase, writePhase} from '@pinyin/frame/lib'
-import {Maybe, notExisting, nothing} from '@pinyin/maybe'
+import {nextFrame, writePhase} from '@pinyin/frame/lib'
+import {existing, Maybe, notExisting, nothing} from '@pinyin/maybe'
 import {getOriginOutline, intermediate} from '@pinyin/outline'
 import {isInViewport} from '@pinyin/outline/dist/isInViewport'
 import {toCSS} from '@pinyin/outline/vendor/transformation-matrix/toString'
 import {ms} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
+import {CubicBezierParam} from './CubicBezierParam';
 import {forDuration} from './forDuration';
 import {getTweenState} from './getTweenState'
 import {isFunction} from './isFunction'
@@ -39,42 +40,25 @@ export async function tweenExit(
 
     const parent = element.parentElement
     if (notExisting(parent)) { return }
-
-    const tweenID = newTweenID()
-    tweeningExit.set(element, tweenID)
-
-    if (notExisting(to)) { return }
+    const placeholder = element.cloneNode(true) as HTMLElement
+    placeholder.style.position = `absolute`
+    const nextSibling = element.nextSibling
+    const origin = getOriginOutline(element)
     const from = getTweenState(element)
     if (!isInViewport(from)) { return }
     to = isFunction(to) ? to(from) : to
     if (notExisting(to)) { return }
-
     duration = isFunction(duration) ? duration(from, to) : duration
     if (duration <= 50) { return }
+    const tweenID = newTweenID()
+    tweeningExit.set(element, tweenID)
 
     await removedElements.get(element)
     await writePhase()
     if (tweeningExit.get(element) !== tweenID) { return }
-
-    const placeholder = element.cloneNode(true) as HTMLElement
-    placeholder.style.position = 'absolute'
-    parent.appendChild(placeholder)
-
-    await readPhase()
-    if (tweeningExit.get(element) !== tweenID) {
-        parent.removeChild(placeholder);
-        return
-    }
-    const origin = getOriginOutline(placeholder)
-
-    await writePhase()
-    if (tweeningExit.get(element) !== tweenID) {
-        parent.removeChild(placeholder);
-        return
-    }
-    placeholder.style.transition = `none`
-    placeholder.style.transform = toCSS(intermediate(origin, from))
-    placeholder.style.opacity = `${from.opacity}`
+    existing(nextSibling) && parent.contains(nextSibling) ?
+        parent.appendChild(placeholder) :
+        parent.insertBefore(placeholder, nextSibling) // FIXME potential capability problem
 
     await nextFrame()
     await writePhase()

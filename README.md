@@ -2,8 +2,6 @@
 
 The animation library to use when you don't really care about animations.
 
-------
-
 ## Install
 
 `npm install --save @pinyin/tween-here`
@@ -100,9 +98,11 @@ getOriginalTweenState(element: HTMLElement): TweenState
 By using these helper functions and `tweenHere`, you can easily make an element tween smoothly from the position of another element, constructing a visual effect of they are the same element.
 
 
-## Notice
+## Limits
 
-This library is very unstable yet, any contributions(code, issue, use cases proposal...) are welcome.
+Target element's `transform` `opacity` and `transition` style property are not preserved after tweening.
+
+`tweenExit` involves DOM structure edit, so it may not capable with some frameworks. 
 
 ## License
 
