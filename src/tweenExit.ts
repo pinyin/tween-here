@@ -40,8 +40,6 @@ export async function tweenExit(
 
     const parent = element.parentElement
     if (notExisting(parent)) { return }
-    const placeholder = element.cloneNode(true) as HTMLElement
-    placeholder.style.position = `absolute`
     const nextSibling = element.nextSibling
     const origin = getOriginOutline(element)
     const from = getTweenState(element)
@@ -56,6 +54,8 @@ export async function tweenExit(
     await removedElements.get(element)
     await writePhase()
     if (tweeningExit.get(element) !== tweenID) { return }
+    const placeholder = element.cloneNode(true) as HTMLElement
+    placeholder.style.position = `absolute`
     existing(nextSibling) && parent.contains(nextSibling) ?
         parent.appendChild(placeholder) :
         parent.insertBefore(placeholder, nextSibling) // FIXME potential capability problem
