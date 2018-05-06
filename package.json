@@ -1,6 +1,6 @@
 {
   "name": "@pinyin/tween-here",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "The animation library to use when you don't want to bother about animations.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

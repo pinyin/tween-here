@@ -62,6 +62,11 @@ export async function tweenExit(
     await readPhase()
     const current = getOriginOutline(placeholder)
 
+    await writePhase()
+    placeholder.style.transition = `none`
+    placeholder.style.transform = toCSS(intermediate(current, from))
+    placeholder.style.opacity = `${from.opacity}`
+
     await nextFrame()
     await writePhase()
     if (tweeningExit.get(element) !== tweenID) {
