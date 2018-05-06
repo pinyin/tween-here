@@ -41,7 +41,6 @@ export async function tweenExit(
     const parent = element.parentElement
     if (notExisting(parent)) { return }
     const nextSibling = element.nextSibling
-    const origin = getOriginOutline(element)
     const from = getTweenState(element)
     if (!isInViewport(from)) { return }
     to = isFunction(to) ? to(from) : to
@@ -59,6 +58,7 @@ export async function tweenExit(
     existing(nextSibling) && parent.contains(nextSibling) ?
         parent.appendChild(placeholder) :
         parent.insertBefore(placeholder, nextSibling) // FIXME potential capability problem
+    const current = getOriginOutline(placeholder)
 
     await nextFrame()
     await writePhase()
@@ -67,7 +67,7 @@ export async function tweenExit(
         return
     }
     placeholder.style.transition = calcTransitionCSS(duration, easing)
-    placeholder.style.transform = toCSS(intermediate(origin, to))
+    placeholder.style.transform = toCSS(intermediate(current, to))
     placeholder.style.opacity = `${to.opacity}`
 
     await forDuration(duration)
