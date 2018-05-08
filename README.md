@@ -50,15 +50,16 @@ We've already had many web animation solutions that are both precise and powerfu
 > Just make this element appear smoothly, please. It should be simple. 
 >                                       - Product Manager
 
-That's what `tween-here` is designed for. It does not aim to be a complete animating library, but you should be able to implement most UI motions (like the ones from [Material Design](https://material.io/guidelines/motion/material-motion.html)) with this library.
+That's what `TweenHere` is designed for. It does not aim to be a complete animating library, but you should be able to implement most UI motions (like the ones from [Material Design](https://material.io/guidelines/motion/material-motion.html)) with this library.
 
 With `TweenHere`, animation is modeled as "how an element comes to its current state", so it should work with many JS frameworks: as long as you know when a DOM node is moved, you can animate it. 
 
 ## APIs
 
-`tween-here` comes with two functions, `tweenHere` and `tweenExit`, each function provides a fast way to implement a kind of motions. 
+`TweenHere` comes with two functions, `tweenHere` and `tweenExit`, each function provides a fast way to implement a kind of motions. 
 
 ```typescript jsx
+
 async function tweenHere(
     element: HTMLElement,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
@@ -103,9 +104,8 @@ The target element's `transform` `opacity` and `transition` style properties are
 
 `tweenExit` adds node to the DOM structure, so it may not be capable with some frameworks. 
 
-This library is still at its early stage, please report an issue if you notice any undesired behavior.
 
-All contributions are welcome.
+This library is still at its early stage, please report an issue if you notice any undesired behavior.
 
 ## Plans
 
@@ -115,4 +115,4 @@ Support rotation.
 
 MIT
 
-
+All contributions are welcome.

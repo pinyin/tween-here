@@ -1,7 +1,7 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
 import {nextFrame, readPhase, writePhase} from '@pinyin/frame/lib'
-import {existing, Maybe, notExisting, nothing} from '@pinyin/maybe'
+import {Maybe, notExisting, nothing} from '@pinyin/maybe'
 import {getOriginOutline, intermediate} from '@pinyin/outline'
 import {isInViewport} from '@pinyin/outline/dist/isInViewport'
 import {toCSS} from '@pinyin/outline/vendor/transformation-matrix/toString'
@@ -40,7 +40,6 @@ export async function tweenExit(
 
     const parent = element.parentElement
     if (notExisting(parent)) { return }
-    const nextSibling = element.nextSibling
     const from = getTweenState(element)
     if (!isInViewport(from)) { return }
     to = isFunction(to) ? to(from) : to
@@ -55,9 +54,7 @@ export async function tweenExit(
     if (tweeningExit.get(element) !== tweenID) { return }
     const placeholder = element.cloneNode(true) as HTMLElement
     placeholder.style.position = `absolute`
-    existing(nextSibling) && parent.contains(nextSibling) ?
-        parent.appendChild(placeholder) :
-        parent.insertBefore(placeholder, nextSibling) // FIXME potential capability problem
+    parent.appendChild(placeholder)
 
     await readPhase()
     const current = getOriginOutline(placeholder)
