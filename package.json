@@ -1,6 +1,6 @@
 {
   "name": "@pinyin/tween-here",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The animation library to use when you don't want to bother about animations.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,10 +30,10 @@
   },
   "homepage": "https://github.com/pinyin/tween-here#readme",
   "devDependencies": {
-    "@pinyin/types": "^0.0.3",
     "typescript": "^2.9.0-dev.20180501"
   },
   "dependencies": {
+    "@pinyin/types": "^0.0.3",
     "@pinyin/async-weak-map": "^0.0.1",
     "@pinyin/dom": "^0.0.2",
     "@pinyin/frame": "^0.0.2",
