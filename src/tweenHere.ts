@@ -1,7 +1,6 @@
 import {nextFrame, writePhase} from '@pinyin/frame'
 import {Maybe, notExisting, nothing} from '@pinyin/maybe'
-import {intermediate, isSimilarOutline} from '@pinyin/outline'
-import {toCSS} from '@pinyin/outline/vendor/transformation-matrix/toString'
+import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam'

@@ -1,10 +1,8 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
-import {nextFrame, readPhase, writePhase} from '@pinyin/frame/lib'
+import {nextFrame, readPhase, writePhase} from '@pinyin/frame'
 import {Maybe, notExisting, nothing} from '@pinyin/maybe'
-import {getOriginOutline, intermediate} from '@pinyin/outline'
-import {isInViewport} from '@pinyin/outline/dist/isInViewport'
-import {toCSS} from '@pinyin/outline/vendor/transformation-matrix/toString'
+import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam';
