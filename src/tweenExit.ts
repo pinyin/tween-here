@@ -1,9 +1,9 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
 import {nextFrame, readPhase, writePhase} from '@pinyin/frame'
-import {Maybe, notExisting, nothing} from '@pinyin/maybe'
+import {Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
-import {ms} from '@pinyin/types'
+import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam';
 import {forDuration} from './forDuration';
@@ -29,11 +29,12 @@ observer.observe(document.body, {
 })
 
 export async function tweenExit(
-    element: HTMLElement,
+    element: Maybe<HTMLElement>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
     duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
     easing: CubicBezierParam = [0, 0, 1, 1]
 ): Promise<void> {
+    if (notExisting(element)) { return }
     if (!document.body.contains(element)) { return }
 
     const parent = element.parentElement

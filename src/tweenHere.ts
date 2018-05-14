@@ -1,7 +1,7 @@
 import {nextFrame, writePhase} from '@pinyin/frame'
-import {Maybe, notExisting, nothing} from '@pinyin/maybe'
+import {Maybe, notExisting} from '@pinyin/maybe'
 import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
-import {ms} from '@pinyin/types'
+import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
@@ -18,11 +18,12 @@ import {TweenState} from './TweenState'
 // 3. cancellable promise?
 // 4. rotation
 export async function tweenHere(
-    element: HTMLElement,
+    element: Maybe<HTMLElement>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
     duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
     easing: CubicBezierParam = [0, 0, 1, 1]
 ): Promise<void> {
+    if (notExisting(element)) { return }
     if (!document.body.contains(element)) { return }
 
     const snapshot = getTweenState(element)
