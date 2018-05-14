@@ -17,7 +17,10 @@ const observer = new MutationObserver((
     mutations: MutationRecord[],
     observer: MutationObserver
 ): void => {
-    const removes = new Set(mutations.flatMap(it => arrayFromNodeList(it.removedNodes)))
+    const removes = new Set(mutations.reduce(
+        (acc, curr) => acc.concat(arrayFromNodeList(curr.removedNodes)),
+        [] as Array<Node>)
+    )
     removes.forEach(removed => {
         removedElements.set(removed, undefined)
     })
