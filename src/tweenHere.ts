@@ -7,6 +7,7 @@ import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
+import {hasSimilarOpacity} from './hasSimilarOpacity'
 import {isFunction} from './isFunction'
 import {newTweenID} from './newTweenID'
 import {TweenID} from './TweenID'
@@ -17,6 +18,7 @@ import {TweenState} from './TweenState'
 // 2. margin/border ...
 // 3. cancellable promise?
 // 4. rotation
+// 5. less reflow
 export async function tweenHere(
     element: Maybe<HTMLElement>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
@@ -30,8 +32,8 @@ export async function tweenHere(
     const to = getOriginalTweenState(element)
     from = isFunction(from) ? from(snapshot, to) : from
     if (notExisting(from)) { return }
-    if (isSimilarOutline(from, to)) { return }
-    if (isSimilarOutline(snapshot, from)) { return }
+    if (isSimilarOutline(from, to) && hasSimilarOpacity(from, to)) { return }
+    if (isSimilarOutline(snapshot, from) && hasSimilarOpacity(snapshot, from)) { return }
 
     const tweenID = newTweenID()
     tweeningHere.set(element, tweenID)
@@ -44,7 +46,6 @@ export async function tweenHere(
     await writePhase()
     if (tweeningHere.get(element) !== tweenID) { return }
     duration = isFunction(duration) ? duration(from, to) : duration
-    if (duration <= 50) { return }
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`
     element.style.opacity = `${to.opacity}`

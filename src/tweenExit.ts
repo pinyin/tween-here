@@ -47,7 +47,6 @@ export async function tweenExit(
     to = isFunction(to) ? to(from) : to
     if (notExisting(to)) { return }
     duration = isFunction(duration) ? duration(from, to) : duration
-    if (duration <= 50) { return }
     const tweenID = newTweenID()
     tweeningExit.set(element, tweenID)
 
