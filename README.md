@@ -35,7 +35,7 @@ tweenHere(content, snapshot) // content will move to its new position smoothly
 ```
 
 ... and you can achieve a surprising number of effects with this simple API.
-[Demo](http://pinyin.github.io/tween-here)
+[Demo (need large screen)](http://pinyin.github.io/tween-here)
 
 ## Design Target
 
