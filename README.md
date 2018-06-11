@@ -93,7 +93,7 @@ getOriginalTweenState(element: HTMLElement): TweenState
 
 By using these helper functions and `tweenHere`, you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
 
-In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know an element will be detached from document and want it to disappear smoothly.
+In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know the element will be detached from document and want it to disappear smoothly.
 
 ## Limits
 
