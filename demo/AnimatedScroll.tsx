@@ -20,7 +20,7 @@ export class AnimatedScroll extends React.Component<DemoProps> {
         const containerStyle = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            '-webkit-overflow-scrolling': 'touch',
+            WebkitOverflowScrolling: 'touch',
             overflowX: 'hidden',
             overflowY: 'scroll',
             willChange: 'transform'
@@ -32,7 +32,7 @@ export class AnimatedScroll extends React.Component<DemoProps> {
 
         const itemStyle = () => ({
             width: `${this.props.width}px`,
-            height: `${this.props.height / 4}px`,
+            height: `${this.props.height / 6}px`,
             backgroundColor: `${randomcolor()}`
         } as CSSProperties)
 

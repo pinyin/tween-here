@@ -35,7 +35,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
         const containerStyle = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            '-webkit-overflow-scrolling': 'touch',
+            WebkitOverflowScrolling: 'touch',
             overflowX: 'hidden',
             overflowY: 'scroll',
             willChange: 'transform',
@@ -73,7 +73,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
         this.items.forEach((ref, id) =>
-            tweenHere(ref, snapshot.items.get(id), (from, to) => Math.abs(from.y - to.y))
+            tweenHere(ref, snapshot.items.get(id), 300)
         )
     }
 
