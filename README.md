@@ -16,8 +16,8 @@ TweenHere is designed for UI animations.
 
 For example, if you want to change the scroll position of a scroll container:
 
-```typescript jsx
-<div> // scroll container element
+```html
+<div style="overflow-y: scroll"> // scroll container element
     <div> // content element
     // ... elements
     </div>
@@ -27,7 +27,7 @@ To adjust its scroll position, you will:
 ```
 container.scrollTop = 100
 ```
-Content will then jump to a new position. What if you want it to scroll smoothly? 
+Content will jump to a new position. What if you want it to move smoothly? 
 
 With TweenHere, you can add an animation within two lines:
 ```
