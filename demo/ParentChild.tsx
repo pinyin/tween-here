@@ -89,7 +89,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
     }
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
-        assume(this.item.current, ref => tweenHere(ref, snapshot.item, 500))
+        assume(this.item.current, ref => tweenHere(ref, snapshot.item, 500, [0.645, 0.045, 0.355, 1]))
     }
 
     private container = React.createRef<HTMLDivElement>()

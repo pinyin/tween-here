@@ -73,7 +73,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
         this.items.forEach((ref, id) =>
-            tweenHere(ref, snapshot.items.get(id), 300)
+            tweenHere(ref, snapshot.items.get(id), 300, [0.645, 0.045, 0.355, 1])
         )
     }
 
