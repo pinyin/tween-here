@@ -87,7 +87,7 @@ type TweenState = {
 ```
 In fact, you can get these numbers manually with `getBoundingClientRect()` and other native APIs. 
 
-For convenience, this library provides a helper functions, `getTweenState`, to capture the `TweenState` of an existing element. 
+For convenience, this library provides a helper function, `getTweenState`, to capture the `TweenState` of an existing element. 
 
 ```typescript jsx
 getTweenState(element: HTMLElement): TweenState
