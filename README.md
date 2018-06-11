@@ -31,7 +31,7 @@ With TweenHere, you can add an animation within two lines:
 ```
 const snapshot = getTweenState(content) // get position of scrolled content
 container.scrollTop = 100
-tweenHere(content, snapshot) // content will move to its current position smoothly 
+tweenHere(content, snapshot) // content will move to its new position smoothly 
 ```
 
 ... and you can achieve a surprising number of effects with this simple API.
@@ -82,16 +82,15 @@ type TweenState = {
     opacity: number
 } 
 ```
-In practice, you may get these numbers by using `getBoundingClientRect()` and other native APIs. 
+In fact, you can get these numbers manually with `getBoundingClientRect()` and other native APIs. 
 
-For convenience, this library provides two helper functions, `getTweenState` and `getOriginalTweenState`, to capture the `TweenState` of an existing element. 
+For convenience, this library provides a helper functions, `getTweenState`, to capture the `TweenState` of an existing element. 
 
 ```typescript jsx
 getTweenState(element: HTMLElement): TweenState
-getOriginalTweenState(element: HTMLElement): TweenState
 ```
 
-By using these helper functions and `tweenHere`, you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
+By using this helper function and `tweenHere`, you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
 
 In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know the element will be detached from document and want it to disappear smoothly.
 
