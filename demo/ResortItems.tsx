@@ -48,7 +48,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
 
         const itemStyle = (color: string) => ({
             width: `${this.props.width}px`,
-            height: `${this.props.height / 4}px`,
+            height: `${this.props.height / 6}px`,
             backgroundColor: `${color}`
         } as CSSProperties)
 

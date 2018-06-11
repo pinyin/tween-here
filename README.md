@@ -12,12 +12,30 @@ It should support TypeScript out of the box. If not, please submit an issue.
 
 TweenHere can handle most UI animations. 
 
-For example, if you want to change the scroll position of an  
+For example, if you want to change the scroll position of a scroll container:
 
 ```typescript jsx
+<div> // scroll container element
+    <div> // content element
+    // ... elements
+    </div>
+</div>
+```
+To adjust its scroll position, you will:
+```
+container.scrollTop = 100
+```
+What if you want it to scroll smoothly? 
 
+With TweenHere, you can add a animation within two lines:
+```
+const snapshot = getTweenState(content) // get position of scrolled content
+container.scrollTop = 100
+tweenHere(content, snapshot) // content will move to its current position smoothly 
 ```
 
+... and you can achieve a surprising number of effects with this simple API.
+[Demo](http://pinyin.github.io/tween-here)
 
 ## Design Target
 
