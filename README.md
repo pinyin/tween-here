@@ -62,18 +62,20 @@ With `TweenHere`, instead of specifying a start position and a end position, an 
 
 async function tweenHere(
     element: HTMLElement,
-    from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
-    duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
-    easing: CubicBezierParam = [0, 0, 1, 1]
+    from: TweenState | ((snapshot: TweenState, to: TweenState) => TweenState),
+    duration: number | ((from: TweenState, to: TweenState) => number),
+    easing: [number, number, number number]
 ): Promise<void> 
 
 async function tweenExit(
     element: HTMLElement,
-    to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
-    duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
-    easing: CubicBezierParam = [0, 0, 1, 1]
+    to: TweenState | ((from: TweenState) => TweenState),
+    duration: number | ((from: TweenState, to: TweenState) => number),
+    easing: [number, number, number, number]
 ): Promise<void> 
 ```
+
+For both function, only the first two params are necessary.
 
 TweenState is an object representing the properties of an element (relative to viewport):
 ```typescript jsx
