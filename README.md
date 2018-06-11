@@ -1,6 +1,6 @@
 # TweenHere
 
-An animation library designed for modern JS frameworks.
+A UI animation library designed for modern JS frameworks.
 
 ## Install
 
