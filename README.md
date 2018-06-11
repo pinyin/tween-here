@@ -25,9 +25,9 @@ To adjust its scroll position, you will:
 ```
 container.scrollTop = 100
 ```
-What if you want it to scroll smoothly? 
+Content will then jump to a new position. What if you want it to scroll smoothly? 
 
-With TweenHere, you can add a animation within two lines:
+With TweenHere, you can add an animation within two lines:
 ```
 const snapshot = getTweenState(content) // get position of scrolled content
 container.scrollTop = 100
