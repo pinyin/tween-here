@@ -38,6 +38,8 @@ tweenHere(content, snapshot) // content will move to its new position smoothly
 
 ... and you can achieve a surprising number of effects with this simple API.
 
+All animations are implemented with [FLIP technique](https://aerotwist.com/blog/flip-your-animations/), so the performance should be relatively good.
+
 ## Design Target
 
 [Motions are important](https://material.io/guidelines/motion/material-motion.html#material-motion-why-does-motion-matter).
