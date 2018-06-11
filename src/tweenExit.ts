@@ -1,6 +1,6 @@
 import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
-import {nextFrame, readPhase, writePhase} from '@pinyin/frame'
+import {nextFrame, writePhase} from '@pinyin/frame'
 import {Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
@@ -56,11 +56,8 @@ export async function tweenExit(
     const placeholder = element.cloneNode(true) as HTMLElement
     placeholder.style.position = `absolute`
     parent.appendChild(placeholder)
-
-    await readPhase()
+    // TODO force reflow to prevent flashing
     const current = getOriginOutline(placeholder)
-
-    await writePhase()
     placeholder.style.transition = `none`
     placeholder.style.transform = toCSS(intermediate(current, from))
     placeholder.style.opacity = `${from.opacity}`
