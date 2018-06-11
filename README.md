@@ -46,13 +46,13 @@ All animations are implemented with [FLIP technique](https://aerotwist.com/blog/
 
 But they are hard to implement.
 
-We've already had many web animation solutions that are both precise and powerful, like [Popmotion](https://popmotion.io/) and [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) and may other awesome ones, but sometimes, even these precise solutions seem to be too much work compared to the simple use case.
+We've already had many web animation solutions that are both precise and powerful, like [Popmotion](https://popmotion.io/) and [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) and many other awesome ones, but sometimes, even these precise solutions seem to be too much work compared to the simple use case.
 
 > "Just make this element appear smoothly, please. It should be simple."  - your product manager
 
 That's what `TweenHere` is designed for: UI animations. It does not aim to be a library that enables any animation, but you should be able to implement most UI motions (like the ones from [Material Design](https://material.io/guidelines/motion/material-motion.html)) with this library.
 
-With `TweenHere`, instead of specifying a start position and a end position, an animation is defined as "how an element comes to its current state", so it should work with most JS frameworks: as long as you can get the reference to a DOM node, you can animate it.
+With `TweenHere`, instead of specifying a start state and a end state, an animation is regarded as "how an element comes to its current state", so it should work with most JS frameworks: as long as you can get the reference to a DOM node, you can animate it.
 
 ## APIs
 
@@ -87,9 +87,9 @@ type TweenState = {
     opacity: number
 } 
 ```
-In fact, you can get these numbers manually with `getBoundingClientRect()` and other native APIs. 
+You can get these numbers manually with `getBoundingClientRect()` and other native APIs. 
 
-For convenience, this library provides a helper function, `getTweenState`, to capture the `TweenState` of an existing element. 
+For convenience, this library provides a helper function, `getTweenState`, to construct a `TweenState` from an existing element. 
 
 ```typescript jsx
 getTweenState(element: HTMLElement): TweenState
@@ -106,6 +106,8 @@ The animated element's `transform` `opacity` and `transition` style properties a
 `tweenExit` adds node to the DOM structure, so it may not be capable with some CSS styles.
 
 This library is still at its early stage, please report an issue if you notice any undesired behavior.
+
+Requires `WeakMap` and `Set` to be present in runtime. 
 
 ## Plans
 
