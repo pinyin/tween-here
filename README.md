@@ -4,7 +4,7 @@ A UI animation library designed for modern JS frameworks.
 
 ## Install
 
-`npm install --save @pinyin/tween-here`
+`npm install --save tween-here`
 
 It should support TypeScript out of the box. If not, please submit an issue.
 
@@ -27,7 +27,7 @@ To adjust its scroll position, you will:
 ```
 container.scrollTop = 100
 ```
-Content will jump to a new position. What if you want it to move smoothly? 
+Content will then jump to a new position. What if you want it to move smoothly? 
 
 With TweenHere, you can add an animation within two lines:
 ```
