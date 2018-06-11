@@ -1,5 +1,5 @@
 {
-  "name": "@pinyin/tween-here",
+  "name": "tween-here",
   "version": "0.0.15",
   "description": "The animation library designed for modern JS frameworks.",
   "main": "dist/index.js",
@@ -30,15 +30,23 @@
   },
   "homepage": "https://github.com/pinyin/tween-here#readme",
   "devDependencies": {
-    "typescript": "^2.9.0-dev.20180501"
+    "@pinyin/base-styles": "0.0.1",
+    "@types/randomcolor": "^0.4.3",
+    "@types/react": "^16.3.17",
+    "@types/react-dom": "^16.0.6",
+    "parcel-bundler": "^1.8.1",
+    "randomcolor": "^0.5.3",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "typescript": "^2.9.1"
   },
   "dependencies": {
-    "@pinyin/types": "^0.0.14",
+    "@pinyin/types": "^0.0.26",
     "@pinyin/async-weak-map": "^0.0.2",
     "@pinyin/dom": "^0.0.2",
     "@pinyin/frame": "^0.0.5",
     "@pinyin/maybe": "^0.0.7",
     "@pinyin/outline": "^0.0.7",
-    "tslib": "^1.9.0"
+    "tslib": "^1.9.2"
   }
 }

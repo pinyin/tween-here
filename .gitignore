@@ -165,7 +165,6 @@ Temporary Items
 dist
 **/dist/*
 src/**/*.js
-'package-lock.json' 
 
 .vscode
 .cache
