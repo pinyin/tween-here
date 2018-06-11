@@ -10,7 +10,9 @@ It should support TypeScript out of the box. If not, please submit an issue.
 
 ## Usage
 
-TweenHere can handle most UI animations. 
+[Demo (need large screen)](http://pinyin.github.io/tween-here)
+
+TweenHere is designed for UI animations. 
 
 For example, if you want to change the scroll position of a scroll container:
 
@@ -35,7 +37,6 @@ tweenHere(content, snapshot) // content will move to its new position smoothly
 ```
 
 ... and you can achieve a surprising number of effects with this simple API.
-[Demo (need large screen)](http://pinyin.github.io/tween-here)
 
 ## Design Target
 
