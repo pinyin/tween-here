@@ -38,7 +38,8 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
             '-webkit-overflow-scrolling': 'touch',
             overflowX: 'hidden',
             overflowY: 'scroll',
-            willChange: 'transform'
+            willChange: 'transform',
+            overflowAnchor: 'none'
         } as CSSProperties
 
         const contentStyle = {
