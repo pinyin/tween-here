@@ -1,0 +1,16 @@
+language: node_js
+cache:
+  directories:
+  - $HOME/.npm
+install:
+- npm ci
+deploy:
+  provider: npm
+  email: bob432091@gmail.com
+  skip_cleanup: true
+  api_key:
+    secure: hYYXQ+ptl4+rBOvj/pYTqtGD/Hg8SCIgIex7/pVnnB/1cX91KU3S6YA289mBXVIsDwvI8TSQdyTgj+CaCKZBSQmuEU5dIeA3nCIWLj738T5NM/4L79TXAmrbAIPI/JwwUHqvt7vCTanEHJLp+YinBgXQYMQxfnOOx0TLMDdWW9wjymAuPtDgFDdWXLFj86Kmb7CkqIa9N26dqY0KcBhW7WZCJetaHOmeSyQRUYZfxW3E/6cXZoimVv/uJgB/0xt6ku9//FbrsuRzUrgr6unYToZ/j/eVqoj1X7y1g19ZEjrJkKWspfbUDRG0EwqGGS5tUkT5Ph7jHSLkpPUiJCJEKqSSDGGSYKnw7hb/fGbrvD7xWdETUgEDo22JaIVwloRgXowMG7ADD3w4Pvr9Si82uPTuhdSmQ3PqasH7lpI1NoX8lz5Uqd54R5pZjPovwb/f4W3Xl4NpEwfoiTNmzJnM+u4bOmQn2dvaar6VOhqPzGg3apvYdZabN+mlHmdvrHL09RVQ6KBXX82muDchNbPIZUTadZpaWfdLPhOB2p0gLJZAPJ9iFDJrKUiuTUZWxLoAtCz/heiSMGIVb/2NNt18R71rpMtN1ENjxEJ3jr7E2uCdVK/eHmELROKkSw+cAUB3b7oKlEovLmfFloBqZtuYgr0HRXpWw6joMjkYrIcM56U=
+  on:
+    tags: true
+    repo: pinyin/tween-here
+    all_branches: true
