@@ -1,5 +1,7 @@
 # TweenHere
 
+[![Build Status](https://travis-ci.org/pinyin/tween-here.svg?branch=master)](https://travis-ci.org/pinyin/tween-here)
+
 A UI animation library designed for modern JS frameworks.
 
 ## Install
