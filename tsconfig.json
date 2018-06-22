@@ -7,15 +7,14 @@
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "declaration": true,
+    "declarationMap": true,
     "strict": true,
     "declarationDir": "dist",
     "importHelpers": true,
     "noEmitHelpers": true,
     "lib": [
       "es6",
-      "dom",
-      "esnext.array",
-      "es2016.array.include"
+      "dom"
     ]
   },
   "include": [
