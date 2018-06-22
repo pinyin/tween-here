@@ -26,9 +26,12 @@ const observer = new MutationObserver((
     })
 })
 const removedElements = new AsyncWeakMap<Node, void>()
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
+
+window.addEventListener(`DOMContentLoaded`, ()=> {
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    })
 })
 
 export async function tweenExit(
