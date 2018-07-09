@@ -5,8 +5,8 @@ import {Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
-import {CubicBezierParam} from './CubicBezierParam';
-import {forDuration} from './forDuration';
+import {CubicBezierParam} from './CubicBezierParam'
+import {forDuration} from './forDuration'
 import {getTweenState} from './getTweenState'
 import {isFunction} from './isFunction'
 import {newTweenID} from './newTweenID'
@@ -17,9 +17,11 @@ const observer = new MutationObserver((
     mutations: MutationRecord[],
     observer: MutationObserver
 ): void => {
-    const removes = new Set(mutations.reduce(
-        (acc, curr) => acc.concat(arrayFromNodeList(curr.removedNodes)),
-        [] as Array<Node>)
+    const removes = new Set(
+        mutations.reduce(
+            (acc, curr) => acc.concat(arrayFromNodeList(curr.removedNodes)),
+            [] as Array<Node>,
+        ),
     )
     removes.forEach(removed => {
         removedElements.set(removed, undefined)
@@ -47,13 +49,13 @@ export async function tweenExit(
     if (notExisting(parent)) { return }
     const from = getTweenState(element)
     if (!isInViewport(from)) { return }
-    to = isFunction(to) ? to(from) : to
-    if (notExisting(to)) { return }
-    duration = isFunction(duration) ? duration(from, to) : duration
     const tweenID = newTweenID()
     tweeningExit.set(element, tweenID)
 
     await removedElements.get(element)
+    to = isFunction(to) ? to(from) : to
+    if (notExisting(to)) { return }
+    duration = isFunction(duration) ? duration(from, to) : duration
     await writePhase()
     if (tweeningExit.get(element) !== tweenID) { return }
     const placeholder = element.cloneNode(true) as HTMLElement
