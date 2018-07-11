@@ -87,9 +87,7 @@ export async function tweenExit(
 
     await forDuration(duration)
     await writePhase()
-    if (lock.get(element) === releaseLock) {
-        cleanup()
-    }
+    cleanup()
 }
 
 const lock: WeakMap<Element, () => void> = new WeakMap()
