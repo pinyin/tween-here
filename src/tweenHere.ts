@@ -36,7 +36,7 @@ export async function tweenHere(
     if (isSimilarOutline(snapshot, from) && hasSimilarOpacity(snapshot, from)) { return }
 
     const tweenID = newTweenID()
-    tweeningHere.set(element, tweenID)
+    lock.set(element, tweenID)
 
     element.style.transition = 'none'
     element.style.transform = toCSS(intermediate(to, from))
@@ -44,7 +44,7 @@ export async function tweenHere(
 
     await nextFrame()
     await writePhase()
-    if (tweeningHere.get(element) !== tweenID) { return }
+    if (lock.get(element) !== tweenID) { return }
     duration = isFunction(duration) ? duration(from, to) : duration
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`
@@ -52,8 +52,8 @@ export async function tweenHere(
 
     await forDuration(duration)
     await writePhase()
-    if (tweeningHere.get(element) !== tweenID) { return }
+    if (lock.get(element) !== tweenID) { return }
     element.style.transition = `none`
 }
 
-export const tweeningHere: WeakMap<Element, TweenID> = new WeakMap()
+export const lock: WeakMap<Element, TweenID> = new WeakMap()
