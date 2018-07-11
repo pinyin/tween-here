@@ -56,10 +56,14 @@ export async function tweenExit(
                 if (isElementDeleted) {
                     cleanup = () => { }
                     resolve()
+                    observer.disconnect()
                 }
             })
             observer.observe(parent, {childList: true, subtree: true}) // FIXME optimize performance for large dom
-            cleanup = reject
+            cleanup = () => {
+                observer.disconnect()
+                reject()
+            }
         },
     )
     to = isFunction(to) ? to(from) : to
