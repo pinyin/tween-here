@@ -41,7 +41,7 @@ export async function tweenExit(
     if (!isInViewport(from)) {
         return
     }
-    const placeholder = snapshotNode(element) as TweenableElement
+    const placeholder = snapshotNode(element)
     placeholder.style.position = `absolute` // TODO more optimization
 
     let cleanup = () => { }
