@@ -42,10 +42,15 @@ export async function tweenExit(
         return
     }
     const placeholder = snapshotNode(element)
-    placeholder.style.position = `absolute` // TODO more optimization
+    placeholder.style.position = `absolute` // TODO more optimization such as contain
 
     let cleanup = () => { }
-    const releaseLock = () => { cleanup() }
+    const releaseLock = () => {
+        if (lock.get(element) === releaseLock) {
+            lock.delete(element)
+            cleanup()
+        }
+    }
     lock.set(element, releaseLock)
 
     await new Promise((resolve, reject) => {
