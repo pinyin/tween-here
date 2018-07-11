@@ -9,7 +9,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "prepublishOnly": "rm -rf dist && npx tsc"
+    "prepublishOnly": "rm -rf dist && npx tsc",
+    "test": "rm -rf dist && npx tsc"
   },
   "repository": {
     "type": "git",
@@ -45,7 +46,7 @@
     "@pinyin/frame": "^0.0.5",
     "@pinyin/maybe": "^0.0.9",
     "@pinyin/outline": "^0.0.7",
-    "@pinyin/types": "^0.0.43",
+    "@pinyin/types": "^0.0.44",
     "snapshot-node": "0.0.1",
     "tslib": "^1.9.3"
   }
