@@ -1,67 +1,75 @@
-import {AsyncWeakMap} from '@pinyin/async-weak-map'
 import {arrayFromNodeList} from '@pinyin/dom'
 import {nextFrame, writePhase} from '@pinyin/frame'
-import {Maybe, notExisting} from '@pinyin/maybe'
+import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
+import {snapshotNode} from 'snapshot-node'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getTweenState} from './getTweenState'
 import {isFunction} from './isFunction'
-import {newTweenID} from './newTweenID'
-import {TweenID} from './TweenID'
+import {TweenableElement} from './TweenableElement'
 import {TweenState} from './TweenState'
 
-const observer = new MutationObserver((
-    mutations: MutationRecord[],
-    observer: MutationObserver
-): void => {
-    const removes = new Set(
-        mutations.reduce(
-            (acc, curr) => acc.concat(arrayFromNodeList(curr.removedNodes)),
-            [] as Array<Node>,
-        ),
-    )
-    removes.forEach(removed => {
-        removedElements.set(removed, undefined)
-    })
-})
-const removedElements = new AsyncWeakMap<Node, void>()
-
-window.addEventListener(`DOMContentLoaded`, ()=> {
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    })
-})
-
+// FIXME don't animate invisible element
 export async function tweenExit(
-    element: Maybe<HTMLElement>,
+    element: Maybe<TweenableElement>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
     duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
-    easing: CubicBezierParam = [0, 0, 1, 1]
+    easing: CubicBezierParam = [0, 0, 1, 1],
 ): Promise<void> {
-    if (notExisting(element)) { return }
-    if (!document.body.contains(element)) { return }
+    const parent = document.body
+    if (notExisting(element) || notExisting(parent) || !parent.contains(element)) {
+        return
+    }
+    const terminatePreviousTween = lock.get(element)
+    if (existing(terminatePreviousTween)) {
+        try {
+            terminatePreviousTween()
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
-    const parent = element.parentElement
-    if (notExisting(parent)) { return }
     const from = getTweenState(element)
-    if (!isInViewport(from)) { return }
-    const tweenID = newTweenID()
-    tweeningExit.set(element, tweenID)
+    if (!isInViewport(from)) {
+        return
+    }
+    const placeholder = snapshotNode(element) as TweenableElement
+    placeholder.style.position = `absolute` // TODO more optimization
 
-    await removedElements.get(element)
+    let cleanup = () => { }
+    const terminate = () => { cleanup() }
+    lock.set(element, terminate)
+
+    await new Promise(
+        (resolve, reject) => {
+            const observer = new MutationObserver((mutations: MutationRecord[]) => {
+                const isElementDeleted = mutations
+                    .filter(mutation =>
+                        arrayFromNodeList(mutation.removedNodes)
+                            .filter(node => node.contains(element))
+                            .length > 0,
+                    )
+                    .length > 0 // TODO is this necessary?
+                if (isElementDeleted) {
+                    cleanup = () => { }
+                    resolve()
+                }
+            })
+            observer.observe(parent, {childList: true, subtree: true}) // FIXME optimize performance for large dom
+            cleanup = reject
+        },
+    )
     to = isFunction(to) ? to(from) : to
-    if (notExisting(to)) { return }
+    if (notExisting(to)) {
+        terminate()
+        return
+    }
     duration = isFunction(duration) ? duration(from, to) : duration
-    await writePhase()
-    if (tweeningExit.get(element) !== tweenID) { return }
-    const placeholder = element.cloneNode(true) as HTMLElement
-    placeholder.style.position = `absolute`
     parent.appendChild(placeholder)
-    // TODO force reflow to prevent flashing
+    cleanup = () => { if (placeholder.parentElement === parent) { parent.removeChild(placeholder) } }
     const current = getOriginOutline(placeholder)
     placeholder.style.transition = `none`
     placeholder.style.transform = toCSS(intermediate(current, from))
@@ -69,8 +77,8 @@ export async function tweenExit(
 
     await nextFrame()
     await writePhase()
-    if (tweeningExit.get(element) !== tweenID) {
-        parent.removeChild(placeholder);
+    if (lock.get(element) !== terminate) {
+        terminate()
         return
     }
     placeholder.style.transition = calcTransitionCSS(duration, easing)
@@ -82,4 +90,4 @@ export async function tweenExit(
     parent.removeChild(placeholder)
 }
 
-export const tweeningExit: WeakMap<Element, TweenID> = new WeakMap()
+const lock: WeakMap<Element, () => void> = new WeakMap()
