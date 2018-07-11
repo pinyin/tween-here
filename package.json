@@ -30,7 +30,7 @@
   "homepage": "https://github.com/pinyin/tween-here#readme",
   "devDependencies": {
     "@pinyin/base-styles": "0.0.1",
-    "@types/randomcolor": "^0.4.3",
+    "@types/randomcolor": "^0.5.0",
     "@types/react": "^16.4.6",
     "@types/react-dom": "^16.0.6",
     "parcel-bundler": "^1.9.4",
@@ -40,12 +40,13 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@pinyin/types": "^0.0.38",
     "@pinyin/async-weak-map": "^0.0.2",
     "@pinyin/dom": "^0.0.2",
     "@pinyin/frame": "^0.0.5",
-    "@pinyin/maybe": "^0.0.8",
+    "@pinyin/maybe": "^0.0.9",
     "@pinyin/outline": "^0.0.7",
+    "@pinyin/types": "^0.0.43",
+    "snapshot-node": "0.0.1",
     "tslib": "^1.9.3"
   }
 }
