@@ -19,14 +19,19 @@ export async function tweenExit(
     duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
     easing: CubicBezierParam = [0, 0, 1, 1],
 ): Promise<void> {
-    const parent = document.body
-    if (notExisting(element) || notExisting(parent) || !parent.contains(element)) {
+    const root = document.body
+    if (!initialized) {
+        observer.observe(root, {childList: true, subtree: true})
+        initialized = true
+    }
+    if (notExisting(element) || notExisting(root) || !root.contains(element)) {
         return
     }
-    const terminatePreviousTween = lock.get(element)
-    if (existing(terminatePreviousTween)) {
+
+    const acquireLock = lock.get(element)
+    if (existing(acquireLock)) {
         try {
-            terminatePreviousTween()
+            acquireLock()
         } catch (e) {
             console.log(e)
         }
@@ -40,40 +45,31 @@ export async function tweenExit(
     placeholder.style.position = `absolute` // TODO more optimization
 
     let cleanup = () => { }
-    const terminate = () => { cleanup() }
-    lock.set(element, terminate)
+    const releaseLock = () => { cleanup() }
+    lock.set(element, releaseLock)
 
-    await new Promise(
-        (resolve, reject) => {
-            const observer = new MutationObserver((mutations: MutationRecord[]) => {
-                const isElementDeleted = mutations
-                    .filter(mutation =>
-                        arrayFromNodeList(mutation.removedNodes)
-                            .filter(node => node.contains(element))
-                            .length > 0,
-                    )
-                    .length > 0 // TODO is this necessary?
-                if (isElementDeleted) {
-                    cleanup = () => { }
-                    resolve()
-                    observer.disconnect()
-                }
-            })
-            observer.observe(parent, {childList: true, subtree: true}) // FIXME optimize performance for large dom
-            cleanup = () => {
-                observer.disconnect()
-                reject()
-            }
-        },
-    )
+    await new Promise((resolve, reject) => {
+        listeners.set(element, () => {
+            listeners.delete(element)
+            resolve()
+        })
+        cleanup = () => {
+            listeners.delete(element)
+            reject()
+        }
+    })
     to = isFunction(to) ? to(from) : to
     if (notExisting(to)) {
-        terminate()
+        releaseLock()
         return
     }
     duration = isFunction(duration) ? duration(from, to) : duration
-    parent.appendChild(placeholder)
-    cleanup = () => { if (placeholder.parentElement === parent) { parent.removeChild(placeholder) } }
+    root.appendChild(placeholder)
+    cleanup = () => {
+        if (placeholder.parentElement === root) {
+            root.removeChild(placeholder)
+        }
+    }
     const current = getOriginOutline(placeholder)
     placeholder.style.transition = `none`
     placeholder.style.transform = toCSS(intermediate(current, from))
@@ -81,8 +77,8 @@ export async function tweenExit(
 
     await nextFrame()
     await writePhase()
-    if (lock.get(element) !== terminate) {
-        terminate()
+    if (lock.get(element) !== releaseLock) {
+        cleanup()
         return
     }
     placeholder.style.transition = calcTransitionCSS(duration, easing)
@@ -91,7 +87,40 @@ export async function tweenExit(
 
     await forDuration(duration)
     await writePhase()
-    parent.removeChild(placeholder)
+    if (lock.get(element) === releaseLock) {
+        cleanup()
+    }
 }
 
 const lock: WeakMap<Element, () => void> = new WeakMap()
+
+const listeners: WeakMap<Node, () => void> = new WeakMap()
+
+let initialized: boolean = false // TODO find a better way to initialize
+const observer: MutationObserver = new MutationObserver((mutations: MutationRecord[]) => {
+    const directlyRemovedNodes = mutations
+        .filter(records => records.removedNodes.length > 0)
+        .reduce(
+            (acc, curr) => {
+                arrayFromNodeList(curr.removedNodes).forEach(node => acc.add(node))
+                return acc
+            },
+            new Set<Node>(),
+        )
+    const allRemovedNodes = new Set<Node>()
+    directlyRemovedNodes.forEach(node => {
+        const treeWalker = document.createTreeWalker(
+            node,
+            NodeFilter.SHOW_ELEMENT,
+        )
+        do {
+            allRemovedNodes.add(treeWalker.currentNode)
+        } while (treeWalker.nextNode())
+    })
+    allRemovedNodes.forEach(tweenable => {
+        const callback = listeners.get(tweenable)
+        if (callback) {
+            callback()
+        }
+    })
+})
