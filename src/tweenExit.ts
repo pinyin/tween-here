@@ -31,7 +31,7 @@ export async function tweenExit(
     }
 
     const container = fullParams.container
-    if (notExisting(element) || notExisting(container) || !container.contains(element)) {
+    if (notExisting(element) || notExisting(container) || !document.body.contains(element)) {
         return
     }
 
