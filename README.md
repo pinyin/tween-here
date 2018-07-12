@@ -66,7 +66,7 @@ async function tweenHere(
     element: HTMLElement,
     from: TweenState | ((snapshot: TweenState, to: TweenState) => TweenState),
     duration: number | ((from: TweenState, to: TweenState) => number),
-    easing: [number, number, number number]
+    easing: [number, number, number, number]
 ): Promise<void> 
 
 async function tweenExit(
