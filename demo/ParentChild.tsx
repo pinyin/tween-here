@@ -16,7 +16,9 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
 
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
-        assume(this.container.current, ref => tweenExit(ref, from => ({...from, opacity: 0}), 300))
+        assume(this.container.current, ref =>
+            tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
+        )
 
         return {item}
     }
@@ -26,7 +28,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             position: 'relative',
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            overflow: `hidden`
+            overflow: `hidden`,
         } as CSSProperties
 
         const containerStyle = {
@@ -36,31 +38,31 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             overflowX: 'hidden',
             overflowY: 'scroll',
             willChange: 'transform',
-            overflowAnchor: 'none'
+            overflowAnchor: 'none',
         } as CSSProperties
 
         const contentStyle = {
-            width: `${this.props.width}px`
+            width: `${this.props.width}px`,
         }
 
         const itemStyle = (color: string) => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
             backgroundColor: `${color}`,
-            textAlign: 'center'
+            textAlign: 'center',
         } as CSSProperties)
 
         const openedItemStyle = {
             width: this.props.width,
             height: this.props.height,
             backgroundColor: 'black',
-            textAlign: 'center'
+            textAlign: 'center',
         } as CSSProperties
 
         const textStyle = (isLarge: boolean) => ({
             fontFamily: 'sans-serif',
             fontSize: isLarge ? 40 : 20,
-            color: 'white'
+            color: 'white',
         } as CSSProperties)
 
         return <div style={rootStyle}>
@@ -80,7 +82,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
                                 >
                                     <p style={textStyle(false)}> Click to Open List Item </p>
                                 </div> :
-                                <div key={id} style={itemStyle(color)}/>
+                                <div key={id} style={itemStyle(color)}/>,
                         )
                     }</div>
                 </div>

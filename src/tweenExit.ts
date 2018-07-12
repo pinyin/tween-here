@@ -16,15 +16,22 @@ import {TweenState} from './TweenState'
 export async function tweenExit(
     element: Maybe<TweenableElement>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
-    duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
-    easing: CubicBezierParam = [0, 0, 1, 1],
+    params: Partial<TweenExitParams> = {},
 ): Promise<void> {
-    const root = document.body
     if (!initialized) {
-        observer.observe(root, {childList: true, subtree: true})
+        observer.observe(document.body, {childList: true, subtree: true})
         initialized = true
     }
-    if (notExisting(element) || notExisting(root) || !root.contains(element)) {
+
+    const fullParams: TweenExitParams = {
+        duration: 200,
+        container: document.body,
+        easing: [0, 0, 1, 1],
+        ...params,
+    }
+
+    const container = fullParams.container
+    if (notExisting(element) || notExisting(container) || !container.contains(element)) {
         return
     }
 
@@ -68,11 +75,15 @@ export async function tweenExit(
         releaseLock()
         return
     }
-    duration = isFunction(duration) ? duration(from, to) : duration
-    root.appendChild(placeholder)
+    const duration = isFunction(fullParams.duration) ? fullParams.duration(from, to) : fullParams.duration
+    if (duration < 30) {
+        releaseLock()
+        return
+    }
+    container.appendChild(placeholder)
     cleanup = () => {
-        if (placeholder.parentElement === root) {
-            root.removeChild(placeholder)
+        if (placeholder.parentElement === container) {
+            container.removeChild(placeholder)
         }
     }
     const current = getOriginOutline(placeholder)
@@ -86,6 +97,7 @@ export async function tweenExit(
         cleanup()
         return
     }
+    const easing = fullParams.easing
     placeholder.style.transition = calcTransitionCSS(duration, easing)
     placeholder.style.transform = toCSS(intermediate(current, to))
     placeholder.style.opacity = `${to.opacity}`
@@ -127,3 +139,9 @@ const observer: MutationObserver = new MutationObserver((mutations: MutationReco
         }
     })
 })
+
+export type TweenExitParams = {
+    duration: ms | ((from: TweenState, to: TweenState) => ms),
+    easing: CubicBezierParam,
+    container: Element
+}

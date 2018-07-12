@@ -72,8 +72,11 @@ async function tweenHere(
 async function tweenExit(
     element: HTMLElement,
     to: TweenState | ((from: TweenState) => TweenState),
-    duration: number | ((from: TweenState, to: TweenState) => number),
-    easing: [number, number, number, number]
+    params?: {
+        duration: number | ((from: TweenState, to: TweenState) => number),
+        easing: [number, number, number, number],
+        container: Element 
+    }
 ): Promise<void> 
 ```
 
