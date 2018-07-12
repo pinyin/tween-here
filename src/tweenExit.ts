@@ -86,9 +86,9 @@ export async function tweenExit(
             container.removeChild(placeholder)
         }
     }
-    const current = getOriginOutline(placeholder)
+    const origin = getOriginOutline(placeholder)
     placeholder.style.transition = `none`
-    placeholder.style.transform = toCSS(intermediate(current, from))
+    placeholder.style.transform = toCSS(intermediate(origin, from))
     placeholder.style.opacity = `${from.opacity}`
 
     await nextFrame()
@@ -99,7 +99,7 @@ export async function tweenExit(
     }
     const easing = fullParams.easing
     placeholder.style.transition = calcTransitionCSS(duration, easing)
-    placeholder.style.transform = toCSS(intermediate(current, to))
+    placeholder.style.transform = toCSS(intermediate(origin, to))
     placeholder.style.opacity = `${to.opacity}`
 
     await forDuration(duration)
