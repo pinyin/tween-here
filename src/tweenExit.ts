@@ -85,7 +85,7 @@ export async function tweenExit(
     await nextFrame()
     await writePhase()
     if (lock.get(element) !== releaseLock) {
-        cleanup()
+        releaseLock()
         return
     }
     const easing = fullParams.easing
@@ -95,7 +95,7 @@ export async function tweenExit(
 
     await forDuration(duration)
     await writePhase()
-    cleanup()
+    releaseLock()
 }
 
 const lock: WeakMap<Element, () => void> = new WeakMap()

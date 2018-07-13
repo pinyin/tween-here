@@ -64,7 +64,7 @@ export async function tweenHere(
     await nextFrame()
     await writePhase()
     if (lock.get(element) !== releaseLock) {
-        cleanup()
+        releaseLock()
         return
     }
     const duration = isFunction(fullParams.duration) ? fullParams.duration(from, to) : fullParams.duration
@@ -75,7 +75,7 @@ export async function tweenHere(
 
     await forDuration(duration)
     await writePhase()
-    cleanup()
+    releaseLock()
 }
 
 export const lock: WeakMap<HTMLElement, () => void> = new WeakMap()
