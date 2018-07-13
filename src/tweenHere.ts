@@ -14,8 +14,7 @@ import {TweenState} from './TweenState'
 // TODO
 // 1. inherit velocity from previous tweening
 // 2. margin/border ...
-// 3. rotation
-// 4. less reflow
+// 3. less reflow
 export async function tweenHere(
     element: Maybe<HTMLElement>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
@@ -50,6 +49,11 @@ export async function tweenHere(
     }
     lock.set(element, releaseLock)
 
+    await writePhase()
+    if (lock.get(element) !== releaseLock) {
+        releaseLock()
+        return
+    }
     element.style.transition = 'none'
     element.style.transform = toCSS(intermediate(to, from))
     element.style.opacity = `${from.opacity}`
