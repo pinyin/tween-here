@@ -39,11 +39,7 @@ export async function tweenHere(
 
     const acquireLock = lock.get(element)
     if (existing(acquireLock)) {
-        try {
-            acquireLock()
-        } catch (e) {
-            console.log(e)
-        }
+        try { acquireLock() } catch {}
     }
     let cleanup = () => {}
     const releaseLock = () => {
@@ -58,9 +54,11 @@ export async function tweenHere(
     element.style.transform = toCSS(intermediate(to, from))
     element.style.opacity = `${from.opacity}`
     cleanup = () => {
-        element.style.transition = `none`
-        element.style.transform = `none`
-        element.style.opacity = `${to.opacity}`
+        try {
+            element.style.transition = `none`
+            element.style.transform = `none`
+            element.style.opacity = `${to.opacity}`
+        } catch {}
     }
 
     await nextFrame()
@@ -80,7 +78,7 @@ export async function tweenHere(
     cleanup()
 }
 
-export const lock: WeakMap<Element, () => void> = new WeakMap()
+export const lock: WeakMap<HTMLElement, () => void> = new WeakMap()
 
 export type TweenHereParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)

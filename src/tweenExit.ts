@@ -8,12 +8,11 @@ import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getTweenState} from './getTweenState'
 import {isFunction} from './isFunction'
-import {TweenableElement} from './TweenableElement'
 import {TweenState} from './TweenState'
 
 // FIXME don't animate invisible element
 export async function tweenExit(
-    element: Maybe<TweenableElement>,
+    element: Maybe<HTMLElement>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
     params: Partial<TweenExitParams> = {},
 ): Promise<void> {
@@ -36,11 +35,7 @@ export async function tweenExit(
 
     const acquireLock = lock.get(element)
     if (existing(acquireLock)) {
-        try {
-            acquireLock()
-        } catch (e) {
-            console.log(e)
-        }
+        try { acquireLock() } catch {}
     }
     let cleanup = () => { }
     const releaseLock = () => {
@@ -55,7 +50,7 @@ export async function tweenExit(
     if (!isInViewport(from)) {
         return
     }
-    const placeholder = snapshotNode(element)
+    const placeholder = snapshotNode(element) as HTMLElement
     placeholder.style.position = `absolute` // TODO more optimization such as contain
 
     await new Promise((resolve, reject) => {
@@ -80,9 +75,7 @@ export async function tweenExit(
     }
     container.appendChild(placeholder)
     cleanup = () => {
-        if (placeholder.parentElement === container) {
-            container.removeChild(placeholder)
-        }
+        try { container.removeChild(placeholder) } catch {}
     }
     const origin = getOriginOutline(placeholder)
     placeholder.style.transition = `none`
