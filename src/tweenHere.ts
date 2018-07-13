@@ -14,17 +14,21 @@ import {TweenState} from './TweenState'
 // TODO
 // 1. inherit velocity from previous tweening
 // 2. margin/border ...
-// 3. cancellable promise?
-// 4. rotation
-// 5. less reflow
+// 3. rotation
+// 4. less reflow
 export async function tweenHere(
     element: Maybe<HTMLElement>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
-    duration: ms | ((from: TweenState, to: TweenState) => ms) = 200,
-    easing: CubicBezierParam = [0, 0, 1, 1]
+    params: Partial<TweenHereParams> = {},
 ): Promise<void> {
     if (notExisting(element)) { return }
     if (!document.body.contains(element)) { return }
+
+    const fullParams: TweenHereParams = {
+        duration: 200,
+        easing: [0, 0, 1, 1],
+        ...params,
+    }
 
     const snapshot = getTweenState(element)
     const to = getOriginalTweenState(element)
@@ -64,7 +68,8 @@ export async function tweenHere(
         cleanup()
         return
     }
-    duration = isFunction(duration) ? duration(from, to) : duration
+    const duration = isFunction(fullParams.duration) ? fullParams.duration(from, to) : fullParams.duration
+    const easing = fullParams.easing
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`
     element.style.opacity = `${to.opacity}`
@@ -75,3 +80,8 @@ export async function tweenHere(
 }
 
 export const lock: WeakMap<Element, () => void> = new WeakMap()
+
+export type TweenHereParams = {
+    duration: ms | ((from: TweenState, to: TweenState) => ms)
+    easing: CubicBezierParam
+}
