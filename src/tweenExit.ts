@@ -1,9 +1,8 @@
-import {arrayFromNodeList} from '@pinyin/dom'
+import {arrayFromNodeList, isElement, snapshotNode, travel} from '@pinyin/dom'
 import {nextFrame, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
-import {snapshotNode} from 'snapshot-node'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
@@ -109,30 +108,26 @@ export async function tweenExit(
 
 const lock: WeakMap<Element, () => void> = new WeakMap()
 
-const listeners: WeakMap<Node, () => void> = new WeakMap()
+const listeners: WeakMap<Element, () => void> = new WeakMap()
 
 let initialized: boolean = false // TODO find a better way to initialize
 const observer: MutationObserver = new MutationObserver((mutations: MutationRecord[]) => {
-    const directlyRemovedNodes = mutations
+    const removedNodes = mutations
         .filter(records => records.removedNodes.length > 0)
         .reduce(
             (acc, curr) => {
-                arrayFromNodeList(curr.removedNodes).forEach(node => acc.add(node))
+                arrayFromNodeList(curr.removedNodes)
+                    .filter(node => isElement(node))
+                    .forEach(node => {
+                        for (const removedNode of travel(node as Element)) {
+                            acc.add(removedNode)
+                        }
+                    })
                 return acc
             },
-            new Set<Node>(),
+            new Set<Element>(),
         )
-    const allRemovedNodes = new Set<Node>()
-    directlyRemovedNodes.forEach(node => {
-        const treeWalker = document.createTreeWalker(
-            node,
-            NodeFilter.SHOW_ELEMENT,
-        )
-        do {
-            allRemovedNodes.add(treeWalker.currentNode)
-        } while (treeWalker.nextNode())
-    })
-    allRemovedNodes.forEach(tweenable => {
+    removedNodes.forEach(tweenable => {
         const callback = listeners.get(tweenable)
         if (callback) {
             callback()

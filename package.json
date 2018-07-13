@@ -42,12 +42,11 @@
   },
   "dependencies": {
     "@pinyin/async-weak-map": "^0.0.2",
-    "@pinyin/dom": "^0.0.2",
+    "@pinyin/dom": "^0.0.3",
     "@pinyin/frame": "^0.0.5",
     "@pinyin/maybe": "^0.0.9",
     "@pinyin/outline": "^0.0.7",
     "@pinyin/types": "^0.0.44",
-    "snapshot-node": "0.0.1",
     "tslib": "^1.9.3"
   }
 }

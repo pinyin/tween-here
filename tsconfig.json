@@ -3,6 +3,7 @@
     "outDir": "dist",
     "target": "es5",
     "module": "commonjs",
+    "downlevelIteration": true,
     "jsx": "react",
     "esModuleInterop": true,
     "inlineSourceMap": true,
