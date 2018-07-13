@@ -65,17 +65,19 @@ With `TweenHere`, instead of specifying a start state and a end state, an animat
 async function tweenHere(
     element: HTMLElement,
     from: TweenState | ((snapshot: TweenState, to: TweenState) => TweenState),
-    duration: number | ((from: TweenState, to: TweenState) => number),
-    easing: [number, number, number, number]
+    params?: {
+        duration?: number | ((from: TweenState, to: TweenState) => number),
+        easing?: [number, number, number, number]
+    }
 ): Promise<void> 
 
 async function tweenExit(
     element: HTMLElement,
     to: TweenState | ((from: TweenState) => TweenState),
     params?: {
-        duration: number | ((from: TweenState, to: TweenState) => number),
-        easing: [number, number, number, number],
-        container: Element 
+        duration?: number | ((from: TweenState, to: TweenState) => number),
+        easing?: [number, number, number, number],
+        container?: Element 
     }
 ): Promise<void> 
 ```
