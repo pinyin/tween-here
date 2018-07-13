@@ -58,6 +58,7 @@ export async function tweenHere(
     element.style.transform = toCSS(intermediate(to, from))
     element.style.opacity = `${from.opacity}`
     cleanup = () => {
+        element.style.transition = `none`
         element.style.transform = `none`
         element.style.opacity = `${to.opacity}`
     }
