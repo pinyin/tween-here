@@ -42,14 +42,6 @@ export async function tweenExit(
             console.log(e)
         }
     }
-
-    const from = getTweenState(element)
-    if (!isInViewport(from)) {
-        return
-    }
-    const placeholder = snapshotNode(element)
-    placeholder.style.position = `absolute` // TODO more optimization such as contain
-
     let cleanup = () => { }
     const releaseLock = () => {
         if (lock.get(element) === releaseLock) {
@@ -58,6 +50,13 @@ export async function tweenExit(
         }
     }
     lock.set(element, releaseLock)
+
+    const from = getTweenState(element)
+    if (!isInViewport(from)) {
+        return
+    }
+    const placeholder = snapshotNode(element)
+    placeholder.style.position = `absolute` // TODO more optimization such as contain
 
     await new Promise((resolve, reject) => {
         listeners.set(element, () => {
