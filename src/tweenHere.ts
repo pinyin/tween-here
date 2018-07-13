@@ -1,5 +1,5 @@
 import {nextFrame, writePhase} from '@pinyin/frame'
-import {Maybe, notExisting} from '@pinyin/maybe'
+import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
@@ -9,8 +9,6 @@ import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
 import {hasSimilarOpacity} from './hasSimilarOpacity'
 import {isFunction} from './isFunction'
-import {newTweenID} from './newTweenID'
-import {TweenID} from './TweenID'
 import {TweenState} from './TweenState'
 
 // TODO
@@ -35,16 +33,37 @@ export async function tweenHere(
     if (isSimilarOutline(from, to) && hasSimilarOpacity(from, to)) { return }
     if (isSimilarOutline(snapshot, from) && hasSimilarOpacity(snapshot, from)) { return }
 
-    const tweenID = newTweenID()
-    lock.set(element, tweenID)
+    const acquireLock = lock.get(element)
+    if (existing(acquireLock)) {
+        try {
+            acquireLock()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    let cleanup = () => {}
+    const releaseLock = () => {
+        if (lock.get(element) === releaseLock) {
+            lock.delete(element)
+            cleanup()
+        }
+    }
+    lock.set(element, releaseLock)
 
     element.style.transition = 'none'
     element.style.transform = toCSS(intermediate(to, from))
     element.style.opacity = `${from.opacity}`
+    cleanup = () => {
+        element.style.transform = `none`
+        element.style.opacity = `${to.opacity}`
+    }
 
     await nextFrame()
     await writePhase()
-    if (lock.get(element) !== tweenID) { return }
+    if (lock.get(element) !== releaseLock) {
+        cleanup()
+        return
+    }
     duration = isFunction(duration) ? duration(from, to) : duration
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`
@@ -52,8 +71,7 @@ export async function tweenHere(
 
     await forDuration(duration)
     await writePhase()
-    if (lock.get(element) !== tweenID) { return }
-    element.style.transition = `none`
+    cleanup()
 }
 
-export const lock: WeakMap<Element, TweenID> = new WeakMap()
+export const lock: WeakMap<Element, () => void> = new WeakMap()
