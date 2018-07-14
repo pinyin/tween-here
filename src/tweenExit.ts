@@ -80,7 +80,7 @@ export async function tweenExit(
     snapshot.style.transition = `none`
     snapshot.style.transform = toCSS(inverse.transform)
     snapshot.style.opacity = `${origin.opacity + inverse.opacityDelta}`
-    COORDINATOR.coordinate(snapshot, origin, inverse)
+    COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse})
 
     await readPhase()
     if (lock.get(element) !== releaseLock) {
@@ -107,11 +107,10 @@ export async function tweenExit(
     }
     const easing = fullParams.easing
     const play = intermediateTweenState(origin, to)
-    console.log(play)
     snapshot.style.transition = calcTransitionCSS(duration, easing)
     snapshot.style.transform = toCSS(play.transform)
     snapshot.style.opacity = `${origin.opacity + play.opacityDelta}`
-    COORDINATOR.coordinate(snapshot, origin, play)
+    COORDINATOR.coordinate(snapshot, {origin: origin, diff: play})
 
     await forDuration(duration)
     await writePhase()
@@ -148,7 +147,7 @@ const observer: MutationObserver = new MutationObserver((mutations: MutationReco
 })
 
 export type TweenExitParams = {
-    duration: ms | ((from: TweenState, to: TweenState) => ms),
-    easing: CubicBezierParam,
+    duration: ms | ((from: TweenState, to: TweenState) => ms)
+    easing: CubicBezierParam
     container: Element
 }

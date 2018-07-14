@@ -19,6 +19,12 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
         assume(this.container.current, ref =>
             tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
         )
+        assume(this.childText.current, ref =>
+            this.childTextSnapshot = getTweenState(ref),
+        )
+        assume(this.pageText.current, ref =>
+            this.pageTextSnapshot = getTweenState(ref),
+        )
 
         return {item}
     }
@@ -59,17 +65,18 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             textAlign: 'center',
         } as CSSProperties
 
-        const textStyle = (isLarge: boolean) => ({
+        const textStyle = (isLarge: boolean): CSSProperties => ({
+            display: 'inline-block',
             fontFamily: 'sans-serif',
             fontSize: isLarge ? 40 : 20,
             color: 'white',
-        } as CSSProperties)
+        })
 
         return <div style={rootStyle}>
             {this.state.opening ?
                 // must provide key or this div will be reused unexpectedly
                 <div key={'page'} ref={this.item} style={openedItemStyle} onClick={this.onClick}>
-                    <p style={textStyle(true)}> Click to Close Page </p>
+                    <p ref={this.pageText} style={textStyle(true)}> Click to Close Page </p>
                 </div> :
                 <div key={'container'} ref={this.container} style={containerStyle}>
                     <div style={contentStyle}>{
@@ -80,7 +87,9 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
                                      style={itemStyle('black')}
                                      onClick={this.onClick}
                                 >
-                                    <p style={textStyle(false)}> Click to Open List Item </p>
+                                    <p ref={this.childText} style={textStyle(false)}>
+                                        Click to Open List Item
+                                    </p>
                                 </div> :
                                 <div key={id} style={itemStyle(color)}/>,
                         )
@@ -94,7 +103,18 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
         assume(this.item.current, ref =>
             tweenHere(ref, snapshot.item, {duration: 500, easing: [0.645, 0.045, 0.355, 1]}),
         )
+        assume(this.childText.current, ref =>
+            tweenHere(ref, this.pageTextSnapshot),
+        )
+        assume(this.pageText.current, ref =>
+            tweenHere(ref, this.childTextSnapshot),
+        )
     }
+
+    private childText = React.createRef<HTMLParagraphElement>()
+    private childTextSnapshot: Maybe<TweenState>
+    private pageText = React.createRef<HTMLParagraphElement>()
+    private pageTextSnapshot: Maybe<TweenState>
 
     private container = React.createRef<HTMLDivElement>()
     private item = React.createRef<HTMLDivElement>()
