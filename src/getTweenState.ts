@@ -1,9 +1,9 @@
 import {hasStyle} from '@pinyin/dom'
 import {getOutline} from '@pinyin/outline'
-import {TweenableElement} from './TweenableElement'
+import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 
-export function getTweenState(element: TweenableElement): TweenState {
+export function getTweenState(element: Tweenable): TweenState {
     const outline = getOutline(element)
     const opacityCSS = getComputedStyle(element).opacity
     const opacity = hasStyle(opacityCSS) ? parseFloat(opacityCSS) : 1

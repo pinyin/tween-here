@@ -9,14 +9,16 @@ import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
 import {hasSimilarOpacity} from './hasSimilarOpacity'
 import {isFunction} from './isFunction'
+import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 
 // TODO
 // 1. inherit velocity from previous tweening
 // 2. margin/border ...
 // 3. support rotate
+// 4. batch update
 export async function tweenHere(
-    element: Maybe<HTMLElement>,
+    element: Maybe<Tweenable>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,
     params: Partial<TweenHereParams> = {},
 ): Promise<void> {
@@ -77,7 +79,7 @@ export async function tweenHere(
     releaseLock()
 }
 
-export const lock: WeakMap<HTMLElement, () => void> = new WeakMap()
+export const lock: WeakMap<Element, () => void> = new WeakMap()
 
 export type TweenHereParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)

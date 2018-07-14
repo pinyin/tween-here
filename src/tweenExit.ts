@@ -9,11 +9,12 @@ import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getTweenState} from './getTweenState'
 import {isFunction} from './isFunction'
+import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 
 // FIXME don't animate invisible element
 export async function tweenExit(
-    element: Maybe<HTMLElement>,
+    element: Maybe<Tweenable>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,
     params: Partial<TweenExitParams> = {},
 ): Promise<void> {
