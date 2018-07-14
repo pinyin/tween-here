@@ -1,16 +1,20 @@
 import {arrayFromNodeList, isElement, snapshotNode, travel} from '@pinyin/dom'
-import {nextFrame, writePhase} from '@pinyin/frame'
+import {nextFrame, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
-import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
+import {isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {SynchronousPromise} from 'synchronous-promise'
 import {calcTransitionCSS} from './calcTransitionCSS'
+import {COORDINATOR} from './Coordinator'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
+import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
+import {intermediateTweenState} from './intermediateTweenState'
 import {isFunction} from './isFunction'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
+import {TweenStateDiff} from './TweenStateDiff'
 
 // FIXME don't animate invisible element
 export async function tweenExit(
@@ -67,6 +71,22 @@ export async function tweenExit(
             }
         },
     )
+    container.appendChild(snapshot)
+    cleanup = () => {
+        try { container.removeChild(snapshot) } catch {}
+    }
+    let origin = getOriginalTweenState(snapshot)
+    const inverse: TweenStateDiff = intermediateTweenState(origin, from)
+    snapshot.style.transition = `none`
+    snapshot.style.transform = toCSS(inverse.transform)
+    snapshot.style.opacity = `${origin.opacity + inverse.opacityDelta}`
+    COORDINATOR.coordinate(snapshot, origin, inverse)
+
+    await readPhase()
+    if (lock.get(element) !== releaseLock) {
+        releaseLock()
+        return
+    }
     to = isFunction(to) ? to(from) : to
     if (notExisting(to)) {
         releaseLock()
@@ -77,14 +97,7 @@ export async function tweenExit(
         releaseLock()
         return
     }
-    container.appendChild(snapshot)
-    cleanup = () => {
-        try { container.removeChild(snapshot) } catch {}
-    }
-    const origin = getOriginOutline(snapshot)
-    snapshot.style.transition = `none`
-    snapshot.style.transform = toCSS(intermediate(origin, from))
-    snapshot.style.opacity = `${from.opacity}`
+    origin = getOriginalTweenState(snapshot)
 
     await nextFrame()
     await writePhase()
@@ -93,9 +106,12 @@ export async function tweenExit(
         return
     }
     const easing = fullParams.easing
+    const play = intermediateTweenState(origin, to)
+    console.log(play)
     snapshot.style.transition = calcTransitionCSS(duration, easing)
-    snapshot.style.transform = toCSS(intermediate(origin, to))
-    snapshot.style.opacity = `${to.opacity}`
+    snapshot.style.transform = toCSS(play.transform)
+    snapshot.style.opacity = `${origin.opacity + play.opacityDelta}`
+    COORDINATOR.coordinate(snapshot, origin, play)
 
     await forDuration(duration)
     await writePhase()

@@ -1,19 +1,21 @@
 import {nextFrame, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
-import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
+import {isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
+import {COORDINATOR} from './Coordinator'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
 import {hasSimilarOpacity} from './hasSimilarOpacity'
+import {intermediateTweenState} from './intermediateTweenState'
 import {isFunction} from './isFunction'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 
 // TODO
-// 1. inherit velocity from previous tweening
+// 1. inherit velocity from previous tweening (with Coordinator)
 // 2. margin/border ...
 // 3. support rotate
 // 4. batch update
@@ -51,9 +53,11 @@ export async function tweenHere(
     }
     lock.set(element, releaseLock)
 
+    const inverse = intermediateTweenState(to, from)
     element.style.transition = 'none'
-    element.style.transform = toCSS(intermediate(to, from))
-    element.style.opacity = `${from.opacity}`
+    element.style.transform = toCSS(inverse.transform)
+    element.style.opacity = `${to.opacity + inverse.opacityDelta}`
+    COORDINATOR.coordinate(element, to, inverse)
     cleanup = () => {
         try {
             element.style.transition = `none`
