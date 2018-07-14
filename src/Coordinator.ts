@@ -1,7 +1,6 @@
 import {nextFrame} from '@pinyin/frame'
 import {existing, notExisting} from '@pinyin/maybe'
-import {applyTransform, centerOf, inverse, toCSS} from '@pinyin/outline'
-import {intermediateTweenState} from './intermediateTweenState'
+import {centerOf, decompose, scale, toCSS, transform, translate} from '@pinyin/outline'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 import {TweenStateDiff} from './TweenStateDiff'
@@ -31,19 +30,27 @@ class Coordinator {
             if (notExisting(childIntent)) {
                 throw new Error(`Uninitialized ${child}.`)
             }
-            const newState: TweenState = {
-                ...applyTransform(
-                    applyTransform(childIntent.origin, childIntent.diff.transform),
-                    inverse(intent.diff.transform),
-                    centerOf(intent.origin),
+
+            const outer = decompose(intent.diff.transform)
+            const inner = decompose(childIntent.diff.transform)
+
+            const deltaX = centerOf(childIntent.origin).x - centerOf(intent.origin).x
+            const deltaY = centerOf(childIntent.origin).y - centerOf(intent.origin).y
+
+            const newTransform = transform(
+                scale(1 / outer.scale.x, 1 / outer.scale.y),
+                translate(
+                    -(deltaX * (outer.scale.x - 1) + outer.translate.x),
+                    -(deltaY * (outer.scale.y - 1) + outer.translate.y),
                 ),
-                opacity: childIntent.origin.opacity,
-            }
+                childIntent.diff.transform,
+            )
+
             // TODO support opacity
-            const newDiff = intermediateTweenState(childIntent.origin, newState)
-            child.style.transform = toCSS(newDiff.transform)
-            this.intents.set(child, {origin: childIntent.origin, diff: newDiff})
+            child.style.transform = toCSS(newTransform)
         })
+
+        this.intents.set(element, intent)
     }
 
     private updateChildrenMap(element: Tweenable): void {
