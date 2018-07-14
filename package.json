@@ -34,7 +34,7 @@
     "@types/randomcolor": "^0.5.0",
     "@types/react": "^16.4.6",
     "@types/react-dom": "^16.0.6",
-    "parcel-bundler": "^1.9.4",
+    "parcel-bundler": "^1.9.6",
     "randomcolor": "^0.5.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -45,8 +45,9 @@
     "@pinyin/dom": "^0.0.3",
     "@pinyin/frame": "^0.0.5",
     "@pinyin/maybe": "^0.0.9",
-    "@pinyin/outline": "^0.0.7",
-    "@pinyin/types": "^0.0.44",
+    "@pinyin/outline": "^0.0.9",
+    "@pinyin/types": "^0.0.45",
+    "synchronous-promise": "^2.0.5",
     "tslib": "^1.9.3"
   }
 }

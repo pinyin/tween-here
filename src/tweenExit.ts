@@ -3,6 +3,7 @@ import {nextFrame, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {getOriginOutline, intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
+import {SynchronousPromise} from 'synchronous-promise'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
@@ -53,16 +54,18 @@ export async function tweenExit(
     const placeholder = snapshotNode(element) as HTMLElement
     placeholder.style.position = `absolute` // TODO more optimization such as contain
 
-    await new Promise((resolve, reject) => {
-        listeners.set(element, () => {
-            listeners.delete(element)
-            resolve()
-        })
-        cleanup = () => {
-            listeners.delete(element)
-            reject()
-        }
-    })
+    await new SynchronousPromise(
+        (resolve: () => void, reject: () => void) => {
+            listeners.set(element, () => {
+                listeners.delete(element)
+                resolve()
+            })
+            cleanup = () => {
+                listeners.delete(element)
+                reject()
+            }
+        },
+    )
     to = isFunction(to) ? to(from) : to
     if (notExisting(to)) {
         releaseLock()
@@ -78,6 +81,12 @@ export async function tweenExit(
         try { container.removeChild(placeholder) } catch {}
     }
     const origin = getOriginOutline(placeholder)
+
+    await writePhase()
+    if (lock.get(element) !== releaseLock) {
+        releaseLock()
+        return
+    }
     placeholder.style.transition = `none`
     placeholder.style.transform = toCSS(intermediate(origin, from))
     placeholder.style.opacity = `${from.opacity}`
