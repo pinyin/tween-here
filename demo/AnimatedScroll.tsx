@@ -65,6 +65,9 @@ export class AnimatedScroll extends React.Component<DemoProps> {
 
         const snapshot = getTweenState(content)
         container.scrollTop = Math.random() * (content.clientHeight - container.clientHeight)
-        tweenHere(content, snapshot, (from, to) => Math.abs(from.y - to.y) / 5, [0.645, 0.045, 0.355, 1])
+        tweenHere(content, snapshot, {
+            duration: (from, to) => Math.abs(from.y - to.y) / 5,
+            easing: [0.645, 0.045, 0.355, 1],
+        })
     }
 }
