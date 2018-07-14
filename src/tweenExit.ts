@@ -51,8 +51,8 @@ export async function tweenExit(
     if (!isInViewport(from)) {
         return
     }
-    const placeholder = snapshotNode(element) as HTMLElement
-    placeholder.style.position = `absolute` // TODO more optimization such as contain
+    const snapshot = snapshotNode(element) as HTMLElement
+    snapshot.style.position = `absolute` // TODO more optimization such as contain
 
     await new SynchronousPromise(
         (resolve: () => void, reject: () => void) => {
@@ -76,20 +76,14 @@ export async function tweenExit(
         releaseLock()
         return
     }
-    container.appendChild(placeholder)
+    container.appendChild(snapshot)
     cleanup = () => {
-        try { container.removeChild(placeholder) } catch {}
+        try { container.removeChild(snapshot) } catch {}
     }
-    const origin = getOriginOutline(placeholder)
-
-    await writePhase()
-    if (lock.get(element) !== releaseLock) {
-        releaseLock()
-        return
-    }
-    placeholder.style.transition = `none`
-    placeholder.style.transform = toCSS(intermediate(origin, from))
-    placeholder.style.opacity = `${from.opacity}`
+    const origin = getOriginOutline(snapshot)
+    snapshot.style.transition = `none`
+    snapshot.style.transform = toCSS(intermediate(origin, from))
+    snapshot.style.opacity = `${from.opacity}`
 
     await nextFrame()
     await writePhase()
@@ -98,9 +92,9 @@ export async function tweenExit(
         return
     }
     const easing = fullParams.easing
-    placeholder.style.transition = calcTransitionCSS(duration, easing)
-    placeholder.style.transform = toCSS(intermediate(origin, to))
-    placeholder.style.opacity = `${to.opacity}`
+    snapshot.style.transition = calcTransitionCSS(duration, easing)
+    snapshot.style.transform = toCSS(intermediate(origin, to))
+    snapshot.style.opacity = `${to.opacity}`
 
     await forDuration(duration)
     await writePhase()
