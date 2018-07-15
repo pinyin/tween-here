@@ -41,7 +41,6 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@pinyin/async-weak-map": "^0.0.2",
     "@pinyin/dom": "^0.0.7",
     "@pinyin/frame": "^0.0.5",
     "@pinyin/maybe": "^0.0.9",
