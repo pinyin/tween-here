@@ -4,7 +4,7 @@
 
 为现代JS框架设计的动画方案
 
-[Open README in English](./README.cn.md)
+[Open README in English](./README.md)
 
 ## 安装
 
