@@ -35,7 +35,7 @@ Content will then jump to a new position. What if you want it to move smoothly?
 
 With TweenHere, you can add an animation within three lines:
 ```
-const content = document.getElementById('element')
+const content = document.getElementById('content')
 const snapshot = getTweenState(content) // get position of scrolled content
 container.scrollTop = 100
 tweenHere(content, snapshot) // content will move to its new position smoothly 

@@ -35,7 +35,7 @@ container.scrollTo = 100
 
 有了TweenHere，你可以用三行代码解决这个问题：
 ```
-const content = document.getElementById('element')
+const content = document.getElementById('content')
 const snapshot = getTweenState() // get position of scrolled content
 container.scrollTop = 100
 tweenHere(content, snapshot) // content will move to its new position smoothly 
