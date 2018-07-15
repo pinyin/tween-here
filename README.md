@@ -122,6 +122,13 @@ Support rotation.
 
 Add more demos.
 
+## Inspired by
+
+[FLIP Technique](https://aerotwist.com/blog/flip-your-animations/)
+[react-flip-move](https://github.com/joshwcomeau/react-flip-move)
+[Flipping](https://github.com/davidkpiano/flipping)
+[react-flip-toolkit](https://github.com/aholachek/react-flip-toolkit)
+
 ## License
 
 MIT
