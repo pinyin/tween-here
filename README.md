@@ -4,7 +4,7 @@
 
 A UI animation library designed for modern JS frameworks.
 
-[打开中文文档](./README.cn.md)
+[打开中文Readme](./README.cn.md)
 
 ## Install
 
@@ -14,7 +14,7 @@ It should support TypeScript out of the box. If not, please submit an issue.
 
 ## Usage
 
-[Demo (need large screen)](http://pinyin.github.io/tween-here)
+[Open Demo (better for large screen)](http://pinyin.github.io/tween-here)
 
 TweenHere is designed for UI animations. 
 
@@ -22,7 +22,7 @@ For example, if you want to change the scroll position of a scroll container:
 
 ```html
 <div style="overflow-y: scroll"> // scroll container element
-    <div> // content element
+    <div id="content"> // content element
     // ... elements
     </div>
 </div>
@@ -33,8 +33,9 @@ container.scrollTop = 100
 ```
 Content will then jump to a new position. What if you want it to move smoothly? 
 
-With TweenHere, you can add an animation within two lines:
+With TweenHere, you can add an animation within three lines:
 ```
+const content = document.getElementById('element')
 const snapshot = getTweenState(content) // get position of scrolled content
 container.scrollTop = 100
 tweenHere(content, snapshot) // content will move to its new position smoothly 
@@ -104,7 +105,7 @@ For convenience, this library provides a helper function, `getTweenState`, to co
 getTweenState(element: HTMLElement): TweenState
 ```
 
-By using this helper function and `tweenHere`, you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
+[By passing the return value from this helper function to `tweenHere`](./demo/ParentChild.tsx), you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
 
 In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know the element will be detached from document and want it to disappear smoothly.
 
@@ -112,23 +113,30 @@ In general, use `tweenHere` when you want an element to move to its current stat
 
 The animated element's `transform` `opacity` and `transition` style properties are not preserved.
 
-`tweenExit` adds node to the DOM structure, so it may not be capable with some CSS styles.
+`tweenExit` adds node to the DOM structure while tweening, so it may not be capable with some CSS styles.
 
 This library is still at its early stage, please report an issue if you notice any undesired behavior.
 
-Requires `WeakMap` and `Set` to be present in runtime. 
+Requires `WeakMap`, `Set` and `MutationObserver` to be present in runtime. Polyfills are ok.
 
 ## Plans
 
+Add document.
+
 Support rotation.
 
-Add more demos.
+Add more [demos](http://pinyin.github.io/tween-here).
 
-## Inspired by
+Add bindings for React/Angular/Vue.
+
+## Similar Projects & Articles
 
 [FLIP Technique](https://aerotwist.com/blog/flip-your-animations/)
+
 [react-flip-move](https://github.com/joshwcomeau/react-flip-move)
+
 [Flipping](https://github.com/davidkpiano/flipping)
+
 [react-flip-toolkit](https://github.com/aholachek/react-flip-toolkit)
 
 ## License
