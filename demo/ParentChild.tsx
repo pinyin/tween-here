@@ -88,7 +88,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
                                      onClick={this.onClick}
                                 >
                                     <p ref={this.childText} style={textStyle(false)}>
-                                        Click to Open List Item
+                                        Click to Open Item
                                     </p>
                                 </div> :
                                 <div key={id} style={itemStyle(color)}/>,
@@ -101,10 +101,10 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
         assume(this.childText.current, ref =>
-            tweenHere(ref, this.pageTextSnapshot, {duration: 300}),
+            tweenHere(ref, this.pageTextSnapshot, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         assume(this.pageText.current, ref =>
-            tweenHere(ref, this.childTextSnapshot, {duration: 300}),
+            tweenHere(ref, this.childTextSnapshot, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         assume(this.item.current, ref =>
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),

@@ -32,7 +32,6 @@ class Coordinator {
             }
 
             const outer = decompose(intent.diff.transform)
-            const inner = decompose(childIntent.diff.transform)
 
             const deltaX = centerOf(childIntent.origin).x - centerOf(intent.origin).x
             const deltaY = centerOf(childIntent.origin).y - centerOf(intent.origin).y
@@ -40,8 +39,12 @@ class Coordinator {
             const newTransform = transform(
                 scale(1 / outer.scale.x, 1 / outer.scale.y),
                 translate(
-                    -(deltaX * (outer.scale.x - 1) + outer.translate.x),
-                    -(deltaY * (outer.scale.y - 1) + outer.translate.y),
+                    -(deltaX * (outer.scale.x - 1)),
+                    -(deltaY * (outer.scale.y - 1)),
+                ),
+                translate(
+                    -outer.translate.x,
+                    -outer.translate.y,
                 ),
                 childIntent.diff.transform,
             )
