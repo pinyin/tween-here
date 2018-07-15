@@ -18,7 +18,6 @@ class Coordinator {
             throw new Error(`Element ${parentElement} is not being coordinated.`)
         }
 
-        // TODO support change on parent relation
         childrenElements.forEach(childElement => {
             const childIntent = this.intents.get(childElement)
             if (notExisting(childIntent)) {
@@ -33,7 +32,7 @@ class Coordinator {
                 childIntent.diff,
             )
 
-            // TODO support opacity
+            // opacity cannot be supported
             childElement.style.transform = toCSS(newTransform)
         })
 
@@ -41,7 +40,7 @@ class Coordinator {
     }
 
     private updateChildrenMap(element: Tweenable): void {
-        this.childrenMap.delete(element) // FIXME
+        this.childrenMap.delete(element)
         const children = new Set<Tweenable>()
 
         this.childrenMap

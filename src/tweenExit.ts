@@ -16,7 +16,6 @@ import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 import {TweenStateDiff} from './TweenStateDiff'
 
-// FIXME don't animate invisible element
 export async function tweenExit(
     element: Maybe<Tweenable>,
     to: Maybe<TweenState> | ((from: TweenState) => Maybe<TweenState>) = nothing,

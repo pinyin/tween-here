@@ -4,6 +4,8 @@
 
 A UI animation library designed for modern JS frameworks.
 
+[打开中文文档](./README.cn.md)
+
 ## Install
 
 `npm install --save tween-here`
