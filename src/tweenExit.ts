@@ -26,16 +26,19 @@ export async function tweenExit(
         observer.observe(document.body, {childList: true, subtree: true})
         initialized = true
     }
+    if (notExisting(element) || !document.body.contains(element) || notExisting(element.parentElement)) {
+        return
+    }
 
     const fullParams: TweenExitParams = {
         duration: 200,
-        container: document.body,
+        container: element.parentElement,
         easing: [0, 0, 1, 1],
         ...params,
     }
 
     const container = fullParams.container
-    if (notExisting(element) || notExisting(container) || !document.body.contains(element)) {
+    if (notExisting(container) || !document.body.contains(container)) {
         return
     }
 
@@ -121,7 +124,7 @@ const lock: WeakMap<Element, () => void> = new WeakMap()
 
 const listeners: WeakMap<Element, () => void> = new WeakMap()
 
-let initialized: boolean = false // TODO find a better way to initialize
+let initialized: boolean = false // TODO improve performance
 const observer: MutationObserver = new MutationObserver((mutations: MutationRecord[]) => {
     const removedNodes = mutations
         .filter(records => records.removedNodes.length > 0)
