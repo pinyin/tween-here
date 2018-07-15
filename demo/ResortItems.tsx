@@ -25,14 +25,14 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
     }
 
     render() {
-        const rootStyle = {
+        const rootStyle: CSSProperties = {
             position: 'relative',
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             overflow: `hidden`
-        } as CSSProperties
+        }
 
-        const containerStyle = {
+        const containerStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             WebkitOverflowScrolling: 'touch',
@@ -40,17 +40,17 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
             overflowY: 'scroll',
             willChange: 'transform',
             overflowAnchor: 'none'
-        } as CSSProperties
+        }
 
-        const contentStyle = {
+        const contentStyle: CSSProperties = {
             width: `${this.props.width}px`
         }
 
-        const itemStyle = (color: string) => ({
+        const itemStyle = (color: string): CSSProperties => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
             backgroundColor: `${color}`
-        } as CSSProperties)
+        })
 
         return <div style={rootStyle}>
             <div style={containerStyle}>

@@ -10,31 +10,32 @@ import {PlayDemo} from './PlayDemo'
 
 export class AnimatedScroll extends React.Component<DemoProps> {
     render() {
-        const rootStyle = {
+        const rootStyle: CSSProperties = {
             position: 'relative',
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            overflow: `hidden`
-        } as CSSProperties
+            overflow: `hidden`,
+            willChange: 'transform',
+        }
 
-        const containerStyle = {
+        const containerStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             WebkitOverflowScrolling: 'touch',
             overflowX: 'hidden',
             overflowY: 'scroll',
             willChange: 'transform'
-        } as CSSProperties
+        }
 
-        const contentStyle = {
+        const contentStyle: CSSProperties = {
             width: `${this.props.width}px`
         }
 
-        const itemStyle = () => ({
+        const itemStyle = (): CSSProperties => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
             backgroundColor: `${randomcolor()}`
-        } as CSSProperties)
+        })
 
         return <div style={rootStyle}>
             <div style={containerStyle} ref={this.container}>

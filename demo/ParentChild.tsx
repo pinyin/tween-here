@@ -30,14 +30,14 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
     }
 
     render() {
-        const rootStyle = {
+        const rootStyle: CSSProperties = {
             position: 'relative',
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             overflow: `hidden`,
-        } as CSSProperties
+        }
 
-        const containerStyle = {
+        const containerStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             WebkitOverflowScrolling: 'touch',
@@ -45,25 +45,25 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             overflowY: 'scroll',
             willChange: 'transform',
             overflowAnchor: 'none',
-        } as CSSProperties
+        }
 
-        const contentStyle = {
+        const contentStyle: CSSProperties = {
             width: `${this.props.width}px`,
         }
 
-        const itemStyle = (color: string) => ({
+        const itemStyle = (color: string): CSSProperties => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
             backgroundColor: `${color}`,
             textAlign: 'center',
-        } as CSSProperties)
+        })
 
-        const openedItemStyle = {
+        const openedItemStyle: CSSProperties = {
             width: this.props.width,
             height: this.props.height,
             backgroundColor: 'black',
             textAlign: 'center',
-        } as CSSProperties
+        }
 
         const textStyle = (isLarge: boolean): CSSProperties => ({
             display: 'inline-block',
