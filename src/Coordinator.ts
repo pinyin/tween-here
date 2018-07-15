@@ -1,5 +1,5 @@
 import {nextFrame} from '@pinyin/frame'
-import {existing, notExisting} from '@pinyin/maybe'
+import {notExisting} from '@pinyin/maybe'
 import {compensate, toCSS, transform} from '@pinyin/outline'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
@@ -12,26 +12,21 @@ class Coordinator {
         this.scheduleCleanup()
     }
 
-    private adjustChildren(element: Tweenable, intent: Intent): void {
-        const children = this.childrenMap.get(element)
-        if (notExisting(children)) {
-            throw new Error(`Element ${element} is not being coordinated.`)
+    private adjustChildren(parentElement: Tweenable, parentIntent: Intent): void {
+        const childrenElements = this.childrenMap.get(parentElement)
+        if (notExisting(childrenElements)) {
+            throw new Error(`Element ${parentElement} is not being coordinated.`)
         }
 
-        // TODO handle previous state
-        const expectedPosition = this.intents.get(element)
-        if (existing(expectedPosition)) {
-            throw new Error(`not implemented`)
-        }
-
-        children.forEach(child => {
-            const childIntent = this.intents.get(child)
+        // TODO support change on parent relation
+        childrenElements.forEach(childElement => {
+            const childIntent = this.intents.get(childElement)
             if (notExisting(childIntent)) {
-                throw new Error(`Uninitialized ${child}.`)
+                throw new Error(`Uninitialized ${childElement}.`)
             }
 
             const compensateTransform =
-                compensate(intent.origin, intent.diff, childIntent.origin)
+                compensate(parentIntent.origin, parentIntent.diff, childIntent.origin)
 
             const newTransform = transform(
                 compensateTransform,
@@ -39,10 +34,10 @@ class Coordinator {
             )
 
             // TODO support opacity
-            child.style.transform = toCSS(newTransform)
+            childElement.style.transform = toCSS(newTransform)
         })
 
-        this.intents.set(element, intent)
+        this.intents.set(parentElement, parentIntent)
     }
 
     private updateChildrenMap(element: Tweenable): void {
