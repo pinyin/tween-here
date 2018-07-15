@@ -1,6 +1,6 @@
 import {nextFrame} from '@pinyin/frame'
 import {existing, notExisting} from '@pinyin/maybe'
-import {centerOf, decompose, scale, toCSS, transform, translate} from '@pinyin/outline'
+import {compensate, toCSS, transform} from '@pinyin/outline'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 import {TweenStateDiff} from './TweenStateDiff'
@@ -12,7 +12,6 @@ class Coordinator {
         this.scheduleCleanup()
     }
 
-    // TODO extract this logic to @pinyin/outline
     private adjustChildren(element: Tweenable, intent: Intent): void {
         const children = this.childrenMap.get(element)
         if (notExisting(children)) {
@@ -31,21 +30,11 @@ class Coordinator {
                 throw new Error(`Uninitialized ${child}.`)
             }
 
-            const outer = decompose(intent.diff.transform)
-
-            const deltaX = centerOf(childIntent.origin).x - centerOf(intent.origin).x
-            const deltaY = centerOf(childIntent.origin).y - centerOf(intent.origin).y
+            const compensateTransform =
+                compensate(intent.origin, intent.diff.transform, childIntent.origin)
 
             const newTransform = transform(
-                scale(1 / outer.scale.x, 1 / outer.scale.y),
-                translate(
-                    -(deltaX * (outer.scale.x - 1)),
-                    -(deltaY * (outer.scale.y - 1)),
-                ),
-                translate(
-                    -outer.translate.x,
-                    -outer.translate.y,
-                ),
+                compensateTransform,
                 childIntent.diff.transform,
             )
 
