@@ -31,11 +31,11 @@ class Coordinator {
             }
 
             const compensateTransform =
-                compensate(intent.origin, intent.diff.transform, childIntent.origin)
+                compensate(intent.origin, intent.diff, childIntent.origin)
 
             const newTransform = transform(
                 compensateTransform,
-                childIntent.diff.transform,
+                childIntent.diff,
             )
 
             // TODO support opacity

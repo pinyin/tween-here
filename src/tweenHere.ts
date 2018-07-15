@@ -55,8 +55,8 @@ export async function tweenHere(
 
     const inverse = intermediateTweenState(to, from)
     element.style.transition = 'none'
-    element.style.transform = toCSS(inverse.transform)
-    element.style.opacity = `${to.opacity + inverse.opacityDelta}`
+    element.style.transform = toCSS(inverse)
+    element.style.opacity = `${to.opacity + inverse.opacity}`
     COORDINATOR.coordinate(element, {origin: to, diff: inverse})
     cleanup = () => {
         try {

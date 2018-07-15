@@ -4,7 +4,7 @@ import {TweenStateDiff} from './TweenStateDiff'
 
 export function intermediateTweenState(from: TweenState, to: TweenState): TweenStateDiff {
     return {
-        transform: intermediate(from, to),
-        opacityDelta: to.opacity - from.opacity,
+        ... intermediate(from, to),
+        opacity: to.opacity - from.opacity,
     }
 }

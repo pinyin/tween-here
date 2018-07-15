@@ -78,8 +78,8 @@ export async function tweenExit(
     let origin = getOriginalTweenState(snapshot)
     const inverse: TweenStateDiff = intermediateTweenState(origin, from)
     snapshot.style.transition = `none`
-    snapshot.style.transform = toCSS(inverse.transform)
-    snapshot.style.opacity = `${origin.opacity + inverse.opacityDelta}`
+    snapshot.style.transform = toCSS(inverse)
+    snapshot.style.opacity = `${origin.opacity + inverse.opacity}`
     COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse})
 
     await readPhase()
@@ -108,8 +108,8 @@ export async function tweenExit(
     const easing = fullParams.easing
     const play = intermediateTweenState(origin, to)
     snapshot.style.transition = calcTransitionCSS(duration, easing)
-    snapshot.style.transform = toCSS(play.transform)
-    snapshot.style.opacity = `${origin.opacity + play.opacityDelta}`
+    snapshot.style.transform = toCSS(play)
+    snapshot.style.opacity = `${origin.opacity + play.opacity}`
     COORDINATOR.coordinate(snapshot, {origin: origin, diff: play})
 
     await forDuration(duration)
