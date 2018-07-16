@@ -1,5 +1,5 @@
 import {nextFrame} from '@pinyin/frame'
-import {notExisting} from '@pinyin/maybe'
+import {assume, notExisting} from '@pinyin/maybe'
 import {compensate, identity, toCSS, transform} from '@pinyin/outline'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
@@ -72,7 +72,11 @@ class Coordinator {
             if (childIntent.fixed) {
                 yield [child]
             } else {
-                yield* [...this.influencePath(child)].map(path => [child, ...path])
+                yield* [...this.influencePath(child)]
+                    .filter(path =>
+                        assume(this.intents.get(path[path.length - 1]), it => it.fixed),
+                    )
+                    .map(path => [child, ...path])
             }
         }
     }
