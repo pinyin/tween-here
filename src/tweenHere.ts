@@ -72,7 +72,7 @@ export async function tweenHere(
     }
 
     await nextFrame()
-    await writePhase()
+    await writePhase(OptimizeFor.PERFORMANCE)
     if (lock.get(element) !== releaseLock) {
         releaseLock()
         return
@@ -85,7 +85,7 @@ export async function tweenHere(
     element.style.opacity = `${to.opacity}`
 
     await forDuration(duration)
-    await writePhase()
+    await writePhase(OptimizeFor.PERFORMANCE)
     releaseLock()
 }
 

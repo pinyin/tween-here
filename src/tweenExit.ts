@@ -92,7 +92,7 @@ export async function tweenExit(
     snapshot.style.opacity = `${origin.opacity + inverse.opacity}`
     COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse, fixed: fixed})
 
-    await readPhase()
+    await readPhase(OptimizeFor.PERFORMANCE)
     if (lock.get(element) !== releaseLock) {
         releaseLock()
         return
@@ -110,7 +110,7 @@ export async function tweenExit(
     origin = getOriginalTweenState(snapshot)
 
     await nextFrame()
-    await writePhase()
+    await writePhase(OptimizeFor.PERFORMANCE)
     if (lock.get(element) !== releaseLock) {
         releaseLock()
         return
@@ -122,7 +122,7 @@ export async function tweenExit(
     COORDINATOR.coordinate(snapshot, {origin: origin, diff: play, fixed: fixed})
 
     await forDuration(duration)
-    await writePhase()
+    await writePhase(OptimizeFor.PERFORMANCE)
     releaseLock()
 }
 
