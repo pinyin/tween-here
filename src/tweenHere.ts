@@ -1,4 +1,4 @@
-import {nextFrame, writePhase} from '@pinyin/frame'
+import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
@@ -33,6 +33,7 @@ export async function tweenHere(
         ...params,
     }
 
+    await readPhase(OptimizeFor.LATENCY)
     const snapshot = getTweenState(element)
     const to = getOriginalTweenState(element)
     from = isFunction(from) ? from(snapshot, to) : from
@@ -53,6 +54,7 @@ export async function tweenHere(
     }
     lock.set(element, releaseLock)
 
+    await writePhase(OptimizeFor.LATENCY)
     const inverse = intermediateTweenState(to, from)
     element.style.transition = 'none'
     element.style.transform = toCSS(inverse)
@@ -72,7 +74,9 @@ export async function tweenHere(
         releaseLock()
         return
     }
-    const duration = isFunction(fullParams.duration) ? fullParams.duration(from, to) : fullParams.duration
+    const duration = isFunction(fullParams.duration) ?
+        fullParams.duration(from, to) :
+        fullParams.duration
     const easing = fullParams.easing
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`

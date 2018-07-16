@@ -1,5 +1,5 @@
 import {arrayFromNodeList, isElement, snapshotNode, travel} from '@pinyin/dom'
-import {nextFrame, readPhase, writePhase} from '@pinyin/frame'
+import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
@@ -54,6 +54,7 @@ export async function tweenExit(
     }
     lock.set(element, releaseLock)
 
+    // TODO can this be batched?
     const from = getTweenState(element)
     if (!isInViewport(from)) {
         return
@@ -73,12 +74,15 @@ export async function tweenExit(
             }
         },
     )
+    await writePhase(OptimizeFor.LATENCY)
     container.appendChild(snapshot)
     cleanup = () => {
         try { container.removeChild(snapshot) } catch {}
     }
+    await readPhase(OptimizeFor.LATENCY)
     let origin = getOriginalTweenState(snapshot)
     const inverse: TweenStateDiff = intermediateTweenState(origin, from)
+    await writePhase(OptimizeFor.LATENCY)
     snapshot.style.transition = `none`
     snapshot.style.transform = toCSS(inverse)
     snapshot.style.opacity = `${origin.opacity + inverse.opacity}`
