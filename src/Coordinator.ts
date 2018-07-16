@@ -12,49 +12,37 @@ class Coordinator {
         this.scheduleCleanup()
     }
 
-    private adjustChildren(parentElement: Tweenable, parentIntent: Intent): void {
-        for (const path of this.influencePath(parentElement)) {
-            const childElement = path[path.length - 1]
-            const ancestors = path.slice(0, path.length)
-            if (notExisting(childElement)) {
-                throw new Error('Unexpected path.')
-            }
-            const childIntent = this.intents.get(childElement)
-            if (notExisting(childIntent)) {
-                throw new Error(`Uninitialized element.`)
-            }
+    private adjustChildren(rootElement: Tweenable, rootIntent: Intent): void {
+        for (const path of this.influencePath(rootElement)) {
+            let compensatedTransform = identity()
 
-            let compensateTransform = identity()
-
-            let ancestorParentIntent = parentIntent
-            for (const ancestor of ancestors) {
-                const ancestorIntent = this.intents.get(ancestor)
-                if (notExisting(ancestorIntent)) {
+            let ancestorParentIntent = rootIntent
+            for (const element of path) {
+                const elementIntent = this.intents.get(element)
+                if (notExisting(elementIntent)) {
                     throw new Error(`Uninitialized ancestor.`)
                 }
 
-                compensateTransform = transform(
+                compensatedTransform = transform(
+                    compensatedTransform,
                     compensate(
                         ancestorParentIntent.origin,
                         ancestorParentIntent.diff,
-                        ancestorIntent.origin,
+                        elementIntent.origin,
                     ),
-                    compensateTransform,
+                    elementIntent.diff,
                 )
 
-                ancestorParentIntent = ancestorIntent
+                ancestorParentIntent = elementIntent
             }
 
-            const newTransform = transform(
-                compensateTransform,
-                childIntent.diff,
-            )
             // opacity cannot be supported
             // TODO override transition & easing?
-            childElement.style.transform = toCSS(newTransform)
+            const child = path[path.length - 1]
+            child.style.transform = toCSS(compensatedTransform)
         }
 
-        this.intents.set(parentElement, parentIntent)
+        this.intents.set(rootElement, rootIntent)
     }
 
     private* influencePath(element: Tweenable): IterableIterator<Path> {
