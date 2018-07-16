@@ -18,7 +18,6 @@ import {TweenState} from './TweenState'
 // 1. inherit velocity from previous tweening (with Coordinator)
 // 2. margin/border ...
 // 3. support rotate
-// 4. batch update
 export async function tweenHere(
     element: Maybe<Tweenable>,
     from: Maybe<TweenState> | ((snapshot: TweenState, to: TweenState) => Maybe<TweenState>) = nothing,

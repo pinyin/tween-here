@@ -4,6 +4,8 @@
 
 A UI animation library designed for modern JS frameworks.
 
+[Open Demo (better for large screen)](http://pinyin.github.io/tween-here)
+
 [打开中文Readme](./README.cn.md)
 
 ## Install
@@ -13,8 +15,6 @@ A UI animation library designed for modern JS frameworks.
 It should support TypeScript out of the box. If not, please submit an issue.
 
 ## Usage
-
-[Open Demo (better for large screen)](http://pinyin.github.io/tween-here)
 
 TweenHere is designed for UI animations. 
 
@@ -108,6 +108,14 @@ getTweenState(element: HTMLElement): TweenState
 [By passing the return value from this helper function to `tweenHere`](./demo/ParentChild.tsx), you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
 
 In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know the element will be detached from document and want it to disappear smoothly.
+
+## Features
+
+Achieve a high FPS by using FLIP technique.
+
+Schedule all DOM operations into microtasks, so there should be little overhead from DOM reflow.
+
+Nested animations are automatically coordinated.
 
 ## Limits
 

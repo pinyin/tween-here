@@ -4,6 +4,8 @@
 
 为现代JS框架设计的动画方案
 
+[查看Demo (最好在大屏设备上打开)](http://pinyin.github.io/tween-here)
+
 [Open README in English](./README.md)
 
 ## 安装
@@ -13,8 +15,6 @@
 已经包含了TypeScript支持。
 
 ## 用法
-
-[查看Demo (最好在大屏设备上打开)](http://pinyin.github.io/tween-here)
 
 TweenHere是为UI动画设计的。
 
@@ -109,6 +109,14 @@ getTweenState(element: HTMLElement): TweenState
 
 总之，如果你希望一个元素平滑过渡到它的当前位置，使用`tweenHere`。如果你希望一个元素平滑地消失，使用`tweenExit`。
 
+## 特点
+
+使用FLIP技巧保持动画过程中的FPS
+
+把对DOM的读写操作统一调度在microtask中，因此可以随时开始动画，不必担心触发reflow。
+
+自动同步嵌套动画。
+
 ## 限制
 
 被动画的元素的`transform` `opacity`和`transition`属性会被覆盖。
@@ -117,7 +125,7 @@ getTweenState(element: HTMLElement): TweenState
 
 这个库仍然在早期阶段，如果注意到不希望的行为，请报告issue。
 
-需要运行时支持WeakMap、Set和MutaionObserver。Polyfill也可以。
+需要运行时支持WeakMap、Set和MutationObserver。Polyfill也可以。
 
 ## 计划
 
