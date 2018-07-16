@@ -29,8 +29,12 @@ export async function tweenHere(
     const fullParams: TweenHereParams = {
         duration: 200,
         easing: [0, 0, 1, 1],
+        fixed: false,
         ...params,
     }
+
+    const fixed = fullParams.fixed
+    const easing = fullParams.easing
 
     await readPhase(OptimizeFor.LATENCY)
     const snapshot = getTweenState(element)
@@ -58,7 +62,7 @@ export async function tweenHere(
     element.style.transition = 'none'
     element.style.transform = toCSS(inverse)
     element.style.opacity = `${to.opacity + inverse.opacity}`
-    COORDINATOR.coordinate(element, {origin: to, diff: inverse})
+    COORDINATOR.coordinate(element, {origin: to, diff: inverse, fixed: fixed})
     cleanup = () => {
         try {
             element.style.transition = `none`
@@ -76,7 +80,6 @@ export async function tweenHere(
     const duration = isFunction(fullParams.duration) ?
         fullParams.duration(from, to) :
         fullParams.duration
-    const easing = fullParams.easing
     element.style.transition = calcTransitionCSS(duration, easing)
     element.style.transform = `none`
     element.style.opacity = `${to.opacity}`
@@ -91,4 +94,5 @@ export const lock: WeakMap<Element, () => void> = new WeakMap()
 export type TweenHereParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)
     easing: CubicBezierParam
+    fixed: boolean
 }

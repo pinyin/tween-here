@@ -33,10 +33,14 @@ export async function tweenExit(
         duration: 200,
         container: element.parentElement,
         easing: [0, 0, 1, 1],
+        fixed: false,
         ...params,
     }
 
     const container = fullParams.container
+    const fixed = fullParams.fixed
+    const easing = fullParams.easing
+
     if (notExisting(container) || !document.body.contains(container)) {
         return
     }
@@ -86,7 +90,7 @@ export async function tweenExit(
     snapshot.style.transition = `none`
     snapshot.style.transform = toCSS(inverse)
     snapshot.style.opacity = `${origin.opacity + inverse.opacity}`
-    COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse})
+    COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse, fixed: fixed})
 
     await readPhase()
     if (lock.get(element) !== releaseLock) {
@@ -111,12 +115,11 @@ export async function tweenExit(
         releaseLock()
         return
     }
-    const easing = fullParams.easing
     const play = intermediateTweenState(origin, to)
     snapshot.style.transition = calcTransitionCSS(duration, easing)
     snapshot.style.transform = toCSS(play)
     snapshot.style.opacity = `${origin.opacity + play.opacity}`
-    COORDINATOR.coordinate(snapshot, {origin: origin, diff: play})
+    COORDINATOR.coordinate(snapshot, {origin: origin, diff: play, fixed: fixed})
 
     await forDuration(duration)
     await writePhase()
@@ -156,4 +159,5 @@ export type TweenExitParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)
     easing: CubicBezierParam
     container: Element
+    fixed: boolean
 }

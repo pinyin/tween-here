@@ -1,6 +1,6 @@
 import {nextFrame} from '@pinyin/frame'
 import {notExisting} from '@pinyin/maybe'
-import {compensate, toCSS, transform} from '@pinyin/outline'
+import {compensate, identity, toCSS, transform} from '@pinyin/outline'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
 import {TweenStateDiff} from './TweenStateDiff'
@@ -13,30 +13,68 @@ class Coordinator {
     }
 
     private adjustChildren(parentElement: Tweenable, parentIntent: Intent): void {
-        const childrenElements = this.childrenMap.get(parentElement)
-        if (notExisting(childrenElements)) {
-            throw new Error(`Element ${parentElement} is not being coordinated.`)
-        }
-
-        childrenElements.forEach(childElement => {
+        for (const path of this.influencePath(parentElement)) {
+            const childElement = path[path.length - 1]
+            const ancestors = path.slice(0, path.length)
+            if (notExisting(childElement)) {
+                throw new Error('Unexpected path.')
+            }
             const childIntent = this.intents.get(childElement)
             if (notExisting(childIntent)) {
-                throw new Error(`Uninitialized ${childElement}.`)
+                throw new Error(`Uninitialized element.`)
             }
 
-            const compensateTransform =
-                compensate(parentIntent.origin, parentIntent.diff, childIntent.origin)
+            let compensateTransform = identity()
+
+            let ancestorParentIntent = parentIntent
+            for (const ancestor of ancestors) {
+                const ancestorIntent = this.intents.get(ancestor)
+                if (notExisting(ancestorIntent)) {
+                    throw new Error(`Uninitialized ancestor.`)
+                }
+
+                compensateTransform = transform(
+                    compensate(
+                        ancestorParentIntent.origin,
+                        ancestorParentIntent.diff,
+                        ancestorIntent.origin,
+                    ),
+                    compensateTransform,
+                )
+
+                ancestorParentIntent = ancestorIntent
+            }
 
             const newTransform = transform(
                 compensateTransform,
                 childIntent.diff,
             )
-
             // opacity cannot be supported
+            // TODO override transition & easing?
             childElement.style.transform = toCSS(newTransform)
-        })
+        }
 
         this.intents.set(parentElement, parentIntent)
+    }
+
+    private* influencePath(element: Tweenable): IterableIterator<Path> {
+        const children = this.childrenMap.get(element)
+        if (notExisting(children)) {
+            throw new Error(`Unexpected parent.`)
+        }
+
+        for (const child of children) {
+            const childIntent = this.intents.get(child)
+            if (notExisting(childIntent)) {
+                throw new Error(`Unexpected child.`)
+            }
+
+            if (childIntent.fixed) {
+                yield [child]
+            } else {
+                yield* [...this.influencePath(child)].map(path => [child, ...path])
+            }
+        }
     }
 
     private updateChildrenMap(element: Tweenable): void {
@@ -84,4 +122,7 @@ export const COORDINATOR = new Coordinator()
 export type Intent = {
     origin: TweenState
     diff: TweenStateDiff
+    fixed: boolean
 }
+
+type Path = ReadonlyArray<Tweenable>

@@ -101,10 +101,10 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
         assume(this.childText.current, ref =>
-            tweenHere(ref, this.pageTextSnapshot, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
+            tweenHere(ref, this.pageTextSnapshot, {fixed: true, duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         assume(this.pageText.current, ref =>
-            tweenHere(ref, this.childTextSnapshot, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
+            tweenHere(ref, this.childTextSnapshot, {fixed: true, duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         assume(this.item.current, ref =>
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
