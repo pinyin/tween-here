@@ -41,8 +41,8 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@pinyin/dom": "^0.0.8",
-    "@pinyin/frame": "^0.0.10",
+    "@pinyin/dom": "^0.0.9",
+    "@pinyin/frame": "^0.0.11",
     "@pinyin/maybe": "^0.0.9",
     "@pinyin/outline": "0.0.13",
     "@pinyin/types": "^0.0.45",

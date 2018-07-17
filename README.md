@@ -71,7 +71,8 @@ async function tweenHere(
     params?: {
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
-        fixed?: boolean
+        fixed?: boolean,
+        from?: Partial<TweenState>
     }
 ): Promise<void> 
 
@@ -82,7 +83,8 @@ async function tweenExit(
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
         container?: Element,
-        fixed?: boolean
+        fixed?: boolean,
+        to?: Partial<TweenState>
     }
 ): Promise<void> 
 ```

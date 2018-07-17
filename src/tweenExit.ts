@@ -34,12 +34,14 @@ export async function tweenExit(
         container: element.parentElement,
         easing: [0, 0, 1, 1],
         fixed: false,
+        from: params.from || getTweenState(element),
         ...params,
     }
 
     const container = fullParams.container
     const fixed = fullParams.fixed
     const easing = fullParams.easing
+    const from = fullParams.from
 
     if (notExisting(container) || !document.body.contains(container)) {
         return
@@ -58,8 +60,6 @@ export async function tweenExit(
     }
     lock.set(element, releaseLock)
 
-    // TODO can this be batched?
-    const from = getTweenState(element)
     if (!isInViewport(from)) {
         return
     }
@@ -162,4 +162,5 @@ export type TweenExitParams = {
     easing: CubicBezierParam
     container: Element
     fixed: boolean
+    from: TweenState
 }

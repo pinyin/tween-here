@@ -26,19 +26,19 @@ export async function tweenHere(
     if (notExisting(element)) { return }
     if (!document.body.contains(element)) { return }
 
+    await readPhase(OptimizeFor.LATENCY)
     const fullParams: TweenHereParams = {
         duration: 200,
         easing: [0, 0, 1, 1],
         fixed: false,
+        to: params.to || getOriginalTweenState(element),
         ...params,
     }
 
     const fixed = fullParams.fixed
     const easing = fullParams.easing
-
-    await readPhase(OptimizeFor.LATENCY)
+    const to = fullParams.to
     const snapshot = getTweenState(element)
-    const to = getOriginalTweenState(element)
     from = isFunction(from) ? from(snapshot, to) : from
     if (notExisting(from)) { return }
     if (isSimilarOutline(from, to) && hasSimilarOpacity(from, to)) { return }
@@ -95,4 +95,5 @@ export type TweenHereParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)
     easing: CubicBezierParam
     fixed: boolean
+    to: TweenState
 }
