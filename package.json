@@ -1,6 +1,6 @@
 {
   "name": "@pinyin/tween-here",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "An animation library designed for modern JS frameworks.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,7 +41,7 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@pinyin/dom": "^0.0.7",
+    "@pinyin/dom": "^0.0.8",
     "@pinyin/frame": "^0.0.10",
     "@pinyin/maybe": "^0.0.9",
     "@pinyin/outline": "0.0.13",
