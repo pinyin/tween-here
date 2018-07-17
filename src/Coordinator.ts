@@ -34,10 +34,10 @@ class Coordinator {
                 )
 
                 ancestorParentIntent = elementIntent
+                element.style.transition = rootElement.style.transition
             }
 
             // opacity cannot be supported
-            // TODO override transition & easing?
             const child = path[path.length - 1]
             child.style.transform = toCSS(compensatedTransform)
         }
