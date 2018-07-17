@@ -63,7 +63,9 @@ export async function tweenExit(
     if (!isInViewport(from)) {
         return
     }
-    const snapshot = snapshotNode(element) as HTMLElement
+    const snapshot = container === element.parentElement ?
+        element.cloneNode(true) as Tweenable :
+        snapshotNode(element) as Tweenable
     snapshot.style.position = `absolute` // TODO more optimization such as contain
 
     await new SynchronousPromise(
