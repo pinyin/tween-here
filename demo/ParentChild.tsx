@@ -45,6 +45,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             overflowY: 'scroll',
             willChange: 'transform',
             overflowAnchor: 'none',
+            zIndex: 9,
         }
 
         const contentStyle: CSSProperties = {
@@ -63,6 +64,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             height: this.props.height,
             backgroundColor: 'black',
             textAlign: 'center',
+            zIndex: 10,
         }
 
         const textStyle = (isLarge: boolean): CSSProperties => ({

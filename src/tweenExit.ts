@@ -1,4 +1,4 @@
-import {arrayFromNodeList, isElement, snapshotNode, travel} from '@pinyin/dom'
+import {isElement, snapshotNode, travel} from '@pinyin/dom'
 import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {isInViewport, toCSS} from '@pinyin/outline'
@@ -63,9 +63,8 @@ export async function tweenExit(
     if (!isInViewport(from)) {
         return
     }
-    const snapshot = container === element.parentElement ?
-        element.cloneNode(true) as Tweenable :
-        snapshotNode(element) as Tweenable
+    const isParentChanged = container !== element.parentElement
+    const snapshot = snapshotNode(element, isParentChanged)
     snapshot.style.position = `absolute` // TODO more optimization such as contain
 
     await new SynchronousPromise(
@@ -138,7 +137,7 @@ const observer: MutationObserver = new MutationObserver((mutations: MutationReco
         .filter(records => records.removedNodes.length > 0)
         .reduce(
             (acc, curr) => {
-                arrayFromNodeList(curr.removedNodes)
+                Array.from(curr.removedNodes)
                     .filter(node => isElement(node))
                     .forEach(node => {
                         for (const removedNode of travel(node as Element)) {
