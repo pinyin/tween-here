@@ -1,6 +1,6 @@
 import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
-import {isSimilarOutline, toCSS} from '@pinyin/outline'
+import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {calcTransitionCSS} from './calcTransitionCSS'
 import {COORDINATOR} from './Coordinator'
@@ -9,7 +9,6 @@ import {forDuration} from './forDuration'
 import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
 import {hasSimilarOpacity} from './hasSimilarOpacity'
-import {intermediateTweenState} from './intermediateTweenState'
 import {isFunction} from './isFunction'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
@@ -26,18 +25,17 @@ export async function tweenHere(
     if (notExisting(element)) { return }
     if (!document.body.contains(element)) { return }
 
-    await readPhase(OptimizeFor.LATENCY)
     const fullParams: TweenHereParams = {
         duration: 200,
         easing: [0, 0, 1, 1],
         fixed: false,
-        to: params.to || getOriginalTweenState(element),
         ...params,
     }
 
     const fixed = fullParams.fixed
     const easing = fullParams.easing
-    const to = fullParams.to
+    await readPhase(OptimizeFor.LATENCY)
+    const to = getOriginalTweenState(element)
     const snapshot = getTweenState(element)
     from = isFunction(from) ? from(snapshot, to) : from
     if (notExisting(from)) { return }
@@ -58,11 +56,11 @@ export async function tweenHere(
     lock.set(element, releaseLock)
 
     await writePhase(OptimizeFor.LATENCY)
-    const inverse = intermediateTweenState(to, from)
     element.style.transition = 'none'
+    const inverse = intermediate(to, from)
     element.style.transform = toCSS(inverse)
-    element.style.opacity = `${to.opacity + inverse.opacity}`
-    COORDINATOR.coordinate(element, {origin: to, diff: inverse, fixed: fixed})
+    element.style.opacity = `${from.opacity}`
+    COORDINATOR.coordinate({element: element, origin: to, diff: inverse, fixed: fixed})
     cleanup = () => {
         try {
             element.style.transition = `none`
@@ -95,5 +93,4 @@ export type TweenHereParams = {
     duration: ms | ((from: TweenState, to: TweenState) => ms)
     easing: CubicBezierParam
     fixed: boolean
-    to: TweenState
 }

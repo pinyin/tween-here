@@ -70,7 +70,7 @@ async function tweenHere(
     from: TweenState | ((snapshot: TweenState, to: TweenState) => TweenState),
     params?: {
         duration?: number | ((from: TweenState, to: TweenState) => number),
-        easing?: [number, number, number, number]
+        easing?: [number, number, number, number],
     }
 ): Promise<void> 
 
@@ -80,7 +80,7 @@ async function tweenExit(
     params?: {
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
-        container?: Element 
+        container?: Element,
     }
 ): Promise<void> 
 ```

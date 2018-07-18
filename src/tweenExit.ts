@@ -1,7 +1,7 @@
 import {isElement, snapshotNode, travel} from '@pinyin/dom'
 import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
-import {isInViewport, toCSS} from '@pinyin/outline'
+import {intermediate, isInViewport, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
 import {SynchronousPromise} from 'synchronous-promise'
 import {calcTransitionCSS} from './calcTransitionCSS'
@@ -10,11 +10,9 @@ import {CubicBezierParam} from './CubicBezierParam'
 import {forDuration} from './forDuration'
 import {getOriginalTweenState} from './getOriginalTweenState'
 import {getTweenState} from './getTweenState'
-import {intermediateTweenState} from './intermediateTweenState'
 import {isFunction} from './isFunction'
 import {Tweenable} from './Tweenable'
 import {TweenState} from './TweenState'
-import {TweenStateDiff} from './TweenStateDiff'
 
 export async function tweenExit(
     element: Maybe<Tweenable>,
@@ -34,14 +32,13 @@ export async function tweenExit(
         container: element.parentElement,
         easing: [0, 0, 1, 1],
         fixed: false,
-        from: params.from || getTweenState(element),
         ...params,
     }
 
     const container = fullParams.container
     const fixed = fullParams.fixed
     const easing = fullParams.easing
-    const from = fullParams.from
+    const from = getTweenState(element)
 
     if (notExisting(container) || !document.body.contains(container)) {
         return
@@ -86,12 +83,12 @@ export async function tweenExit(
     }
     await readPhase(OptimizeFor.LATENCY)
     let origin = getOriginalTweenState(snapshot)
-    const inverse: TweenStateDiff = intermediateTweenState(origin, from)
     await writePhase(OptimizeFor.LATENCY)
     snapshot.style.transition = `none`
+    const inverse = intermediate(origin, from)
     snapshot.style.transform = toCSS(inverse)
-    snapshot.style.opacity = `${origin.opacity + inverse.opacity}`
-    COORDINATOR.coordinate(snapshot, {origin: origin, diff: inverse, fixed: fixed})
+    snapshot.style.opacity = `${from.opacity}`
+    COORDINATOR.coordinate({element: snapshot, origin: origin, diff: inverse, fixed: fixed})
 
     await readPhase(OptimizeFor.PERFORMANCE)
     if (lock.get(element) !== releaseLock) {
@@ -116,11 +113,11 @@ export async function tweenExit(
         releaseLock()
         return
     }
-    const play = intermediateTweenState(origin, to)
     snapshot.style.transition = calcTransitionCSS(duration, easing)
+    const play = intermediate(origin, to)
     snapshot.style.transform = toCSS(play)
-    snapshot.style.opacity = `${origin.opacity + play.opacity}`
-    COORDINATOR.coordinate(snapshot, {origin: origin, diff: play, fixed: fixed})
+    snapshot.style.opacity = `${to.opacity}`
+    COORDINATOR.coordinate({element: snapshot, origin: origin, diff: play, fixed: fixed})
 
     await forDuration(duration)
     await writePhase(OptimizeFor.PERFORMANCE)
@@ -161,5 +158,4 @@ export type TweenExitParams = {
     easing: CubicBezierParam
     container: Element
     fixed: boolean
-    from: TweenState
 }
