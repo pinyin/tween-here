@@ -1,5 +1,5 @@
 import {nextFrame} from '@pinyin/frame'
-import {compensate, identity, toCSS, Transform, transform} from '@pinyin/outline'
+import {compensate, Outline, toCSS, transform} from '@pinyin/outline'
 import {NodeTravel, NodeTree} from './NodeTree'
 import {TransformIntent} from './TransformIntent'
 import {Tweenable} from './Tweenable'
@@ -22,29 +22,30 @@ class Coordinator {
                     NodeTravel.SKIP,
         )
 
+        const rootCompensated = (child: Outline) => compensate(intent.origin, intent.diff, child)
+
         for (const path of paths as IterableIterator<Array<Tweenable>>) {
-            const compensatedTransform = path.reduce(
-                ([parentIntent, parentCompensation], curr) => {
-                    const childIntent = this.intents.get(curr)!
+            const pathCompensated = path.reduce(
+                (acc, curr) => {
+                    const currIntent = this.intents.get(curr)!
+                    currIntent.element.style.transition = intent.element.style.transition
 
-                    const childCompensation = transform(
-                        parentCompensation,
+                    return (child: Outline) => transform(
+                        acc(currIntent.origin),
+                        currIntent.diff,
                         compensate(
-                            parentIntent.origin,
-                            parentIntent.diff,
-                            childIntent.origin,
-                        ),
-                        childIntent.diff,
+                            currIntent.origin,
+                            currIntent.diff,
+                            child,
+                        )
                     )
-
-                    childIntent.element.style.transition = intent.element.style.transition
-                    return [childIntent, childCompensation] as [TransformIntent, Transform]
                 },
-                [intent, identity()] as [TransformIntent, Transform],
-            )[1]
+                rootCompensated,
+            )
 
             const child = path[path.length - 1]
-            child.style.transform = toCSS(compensatedTransform)
+            const childIntent = this.intents.get(child)!
+            child.style.transform = toCSS(transform(pathCompensated(childIntent.origin), childIntent.diff))
         }
     }
 
@@ -64,5 +65,3 @@ class Coordinator {
 }
 
 export const COORDINATOR = new Coordinator()
-
-type Path = ReadonlyArray<Tweenable>
