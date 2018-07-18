@@ -1,120 +1,68 @@
 import {nextFrame} from '@pinyin/frame'
-import {assume, notExisting} from '@pinyin/maybe'
-import {compensate, identity, toCSS, transform} from '@pinyin/outline'
+import {compensate, identity, toCSS, Transform, transform} from '@pinyin/outline'
+import {NodeTravel, NodeTree} from './NodeTree'
+import {TransformIntent} from './TransformIntent'
 import {Tweenable} from './Tweenable'
-import {TweenState} from './TweenState'
-import {TweenStateDiff} from './TweenStateDiff'
 
 class Coordinator {
-    coordinate(element: Tweenable, position: Intent): void {
-        this.updateChildrenMap(element)
-        this.adjustChildren(element, position)
+    coordinate(intent: TransformIntent): void {
+        this.adjustChildren(intent)
         this.scheduleCleanup()
     }
 
-    private adjustChildren(rootElement: Tweenable, rootIntent: Intent): void {
-        for (const path of this.influencePath(rootElement)) {
-            let compensatedTransform = identity()
+    private adjustChildren(intent: TransformIntent): void {
+        this.tree.insert(intent.element)
+        this.intents.set(intent.element, intent)
 
-            let ancestorParentIntent = rootIntent
-            for (const element of path) {
-                const elementIntent = this.intents.get(element)
-                if (notExisting(elementIntent)) {
-                    throw new Error(`Uninitialized ancestor.`)
-                }
+        const paths = this.tree.DFS(intent.element, element =>
+            element === intent.element ?
+                NodeTravel.SKIP :
+                this.intents.get(element as Tweenable)!.fixed ?
+                    NodeTravel.ACCEPT :
+                    NodeTravel.SKIP,
+        )
 
-                compensatedTransform = transform(
-                    compensatedTransform,
-                    compensate(
-                        ancestorParentIntent.origin,
-                        ancestorParentIntent.diff,
-                        elementIntent.origin,
-                    ),
-                    elementIntent.diff,
-                )
+        for (const path of paths as IterableIterator<Array<Tweenable>>) {
+            const compensatedTransform = path.reduce(
+                ([parentIntent, parentCompensation], curr) => {
+                    const childIntent = this.intents.get(curr)!
 
-                ancestorParentIntent = elementIntent
-                element.style.transition = rootElement.style.transition
-            }
+                    const childCompensation = transform(
+                        parentCompensation,
+                        compensate(
+                            parentIntent.origin,
+                            parentIntent.diff,
+                            childIntent.origin,
+                        ),
+                        childIntent.diff,
+                    )
 
-            // opacity cannot be supported
+                    childIntent.element.style.transition = intent.element.style.transition
+                    return [childIntent, childCompensation] as [TransformIntent, Transform]
+                },
+                [intent, identity()] as [TransformIntent, Transform],
+            )[1]
+
             const child = path[path.length - 1]
             child.style.transform = toCSS(compensatedTransform)
         }
-
-        this.intents.set(rootElement, rootIntent)
     }
 
-    private* influencePath(element: Tweenable): IterableIterator<Path> {
-        const children = this.childrenMap.get(element)
-        if (notExisting(children)) {
-            throw new Error(`Unexpected parent.`)
-        }
-
-        for (const child of children) {
-            const childIntent = this.intents.get(child)
-            if (notExisting(childIntent)) {
-                throw new Error(`Unexpected child.`)
-            }
-
-            if (childIntent.fixed) {
-                yield [child]
-            } else {
-                yield* [...this.influencePath(child)]
-                    .filter(path =>
-                        assume(this.intents.get(path[path.length - 1]), it => it.fixed),
-                    )
-                    .map(path => [child, ...path])
-            }
-        }
-    }
-
-    private updateChildrenMap(element: Tweenable): void {
-        this.childrenMap.delete(element)
-        const children = new Set<Tweenable>()
-
-        this.childrenMap
-            .forEach((descendants, ancestor) => {
-                if (ancestor.contains(element)) {
-                    descendants.forEach(e => {
-                        if (element.contains(e)) {
-                            descendants.delete(e)
-                        }
-                    })
-                }
-                if (element.contains(ancestor)) {
-                    children.add(ancestor)
-                }
-            })
-
-        this.childrenMap.set(element, children)
-    }
-
-    private intents: Map<Tweenable, Intent> = new Map()
-    private childrenMap: Map<Tweenable, Set<Tweenable>> = new Map()
+    private readonly intents: Map<Tweenable, TransformIntent> = new Map()
+    private readonly tree = new NodeTree()
 
     private async scheduleCleanup(): Promise<void> {
-        this.cleanupScheduled = true
         await nextFrame()
-        if (!this.cleanupScheduled) {
+
+        if (this.tree.isEmpty() && this.intents.size === 0) {
             return
         }
 
-        this.intents = new Map()
-        this.childrenMap = new Map()
-
-        this.cleanupScheduled = false
+        this.intents.clear()
+        this.tree.clear()
     }
-
-    private cleanupScheduled: boolean = false
 }
 
 export const COORDINATOR = new Coordinator()
-
-export type Intent = {
-    origin: TweenState
-    diff: TweenStateDiff
-    fixed: boolean
-}
 
 type Path = ReadonlyArray<Tweenable>
