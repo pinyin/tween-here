@@ -41,7 +41,7 @@ export class SideDrawer extends React.Component<DemoProps, State> {
                 overflowX: 'hidden',
                 overflowY: 'scroll',
                 willChange: 'transform',
-                filter: `drop-shadow(0px 0px 4px grey)`,
+                boxShadow: 'grey 0px 0px 6px',
                 zIndex: 10,
             },
             ...this.state.opening ?
