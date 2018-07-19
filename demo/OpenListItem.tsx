@@ -17,9 +17,10 @@ export class OpenListItem extends React.Component<DemoProps, State, Snapshot> {
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
         const text = assume(this.text.current, ref => getTweenState(ref))
-        assume(this.list.current, ref =>
-            tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
-        )
+        assume(this.list.current, ref => {
+            tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300})
+            this.scrollTop = ref.scrollTop
+        })
 
         return {item, text}
     }
@@ -103,6 +104,9 @@ export class OpenListItem extends React.Component<DemoProps, State, Snapshot> {
         assume(this.item.current, ref =>
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
+        assume(this.list.current, ref => {
+            ref.scrollTop = this.scrollTop
+        })
     }
 
     private list = React.createRef<HTMLDivElement>()
@@ -111,6 +115,7 @@ export class OpenListItem extends React.Component<DemoProps, State, Snapshot> {
     private items = new Array(10)
         .fill(nothing)
         .map((_, id) => ({id, color: randomcolor()}))
+    private scrollTop = 0
 
     private onClick = () => {
         this.setState(state => ({opening: !state.opening}))

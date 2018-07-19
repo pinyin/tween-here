@@ -17,9 +17,10 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
         const text = assume(this.text.current, ref => getTweenState(ref))
-        assume(this.list.current, ref =>
-            tweenExit(ref, from => ({...from, x: from.x - from.width, opacity: 0}), {duration: 300}),
-        )
+        assume(this.list.current, ref => {
+            this.scrollTop = ref.scrollTop
+            tweenExit(ref, from => ({...from, x: from.x - from.width, opacity: 0}), {duration: 300})
+        })
         assume(this.item.current, ref =>
             tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
         )
@@ -107,12 +108,13 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         if (prevState.opening && !this.state.opening) {
-            assume(this.list.current, ref =>
+            assume(this.list.current, ref => {
                 tweenHere(ref, snapshot => ({...snapshot, x: snapshot.x - snapshot.width}), {
                     duration: 400,
                     easing: [0.645, 0.045, 0.355, 1],
-                }),
-            )
+                })
+                ref.scrollTop = this.scrollTop
+            })
         }
     }
 
@@ -122,6 +124,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     private items = new Array(10)
         .fill(nothing)
         .map((_, id) => ({id, color: randomcolor()}))
+    private scrollTop = 0
 
     private onClick = () => {
         this.setState(state => ({opening: !state.opening}))
