@@ -17,7 +17,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
         const text = assume(this.text.current, ref => getTweenState(ref))
-        assume(this.container.current, ref =>
+        assume(this.list.current, ref =>
             tweenExit(ref, from => ({...from, x: from.x - from.width, opacity: 0}), {duration: 300}),
         )
         assume(this.item.current, ref =>
@@ -35,18 +35,18 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
             overflow: `hidden`,
         }
 
-        const containerStyle: CSSProperties = {
+        const listStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             WebkitOverflowScrolling: 'touch',
-            overflowX: 'visible',
-            overflowY: 'scroll',
+            overflowX: 'hidden',
+            overflowY: 'auto',
             willChange: 'transform',
             overflowAnchor: 'none',
             zIndex: 9,
         }
 
-        const contentStyle: CSSProperties = {
+        const listItemStyle: CSSProperties = {
             width: `${this.props.width}px`,
         }
 
@@ -78,8 +78,8 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
                 <div key={'page'} ref={this.item} style={openedItemStyle} onClick={this.onClick}>
                     <p ref={this.text} style={textStyle(true)}> Click to Close Page </p>
                 </div> :
-                <div key={'container'} ref={this.container} style={containerStyle}>
-                    <div style={contentStyle}>{
+                <div key={'list'} ref={this.list} style={listStyle}>
+                    <div style={listItemStyle}>{
                         this.items.map(({id, color}) =>
                             id === 5 ?
                                 <div key={id}
@@ -107,7 +107,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         if (prevState.opening && !this.state.opening) {
-            assume(this.container.current, ref =>
+            assume(this.list.current, ref =>
                 tweenHere(ref, snapshot => ({...snapshot, x: snapshot.x - snapshot.width}), {
                     duration: 400,
                     easing: [0.645, 0.045, 0.355, 1],
@@ -116,7 +116,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
         }
     }
 
-    private container = React.createRef<HTMLDivElement>()
+    private list = React.createRef<HTMLDivElement>()
     private item = React.createRef<HTMLDivElement>()
     private text = React.createRef<HTMLParagraphElement>()
     private items = new Array(10)
