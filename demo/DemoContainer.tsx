@@ -8,6 +8,7 @@ export class DemoContainer extends React.Component {
             width: `375px`,
             height: `667px`,
             overflow: `hidden`,
+            backgroundColor: 'aliceblue',
         }
 
         return <div style={rootStyle}>
