@@ -5,19 +5,12 @@ import * as React from 'react'
 import {CSSProperties} from 'react'
 import {getTweenState} from '../src/getTweenState'
 import {tweenHere} from '../src/tweenHere'
+import {DemoContainer} from './DemoContainer'
 import {DemoProps} from './DemoProps'
 import {PlayDemo} from './PlayDemo'
 
 export class AnimatedScroll extends React.Component<DemoProps> {
     render() {
-        const rootStyle: CSSProperties = {
-            position: 'relative',
-            width: `${this.props.width}px`,
-            height: `${this.props.height}px`,
-            overflow: `hidden`,
-            willChange: 'transform',
-        }
-
         const containerStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
@@ -37,7 +30,7 @@ export class AnimatedScroll extends React.Component<DemoProps> {
             backgroundColor: `${randomcolor({luminosity: 'light'})}`,
         })
 
-        return <div style={rootStyle}>
+        return <DemoContainer>
             <div style={containerStyle} ref={this.container}>
                 <div style={contentStyle} ref={this.content}>{
                     new Array(100).fill(nothing).map((_, i) =>
@@ -47,10 +40,10 @@ export class AnimatedScroll extends React.Component<DemoProps> {
             </div>
             <PlayDemo onClick={this.onClick}>
                 <svg style={{width: 24, height: 24}} viewBox="0 0 24 24">
-                    <path fill="#FFFFFF" d="M9,3L5,7H8V14H10V7H13M16,17V10H14V17H11L15,21L19,17H16Z"/>
+                    <path fill="black" d="M9,3L5,7H8V14H10V7H13M16,17V10H14V17H11L15,21L19,17H16Z"/>
                 </svg>
             </PlayDemo>
-        </div>
+        </DemoContainer>
     }
 
     private container = React.createRef<HTMLDivElement>()
@@ -67,7 +60,7 @@ export class AnimatedScroll extends React.Component<DemoProps> {
         const snapshot = getTweenState(content)
         container.scrollTop = Math.random() * (content.clientHeight - container.clientHeight)
         tweenHere(content, snapshot, {
-            duration: (from, to) => Math.abs(from.y - to.y) / 5,
+            duration: (from, to) => Math.max(Math.abs(from.y - to.y) / 5, 300),
             easing: [0.645, 0.045, 0.355, 1],
         })
     }

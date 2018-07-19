@@ -6,6 +6,7 @@ import {getTweenState} from '../src/getTweenState'
 import {tweenExit} from '../src/tweenExit'
 import {tweenHere} from '../src/tweenHere'
 import {TweenState} from '../src/TweenState'
+import {DemoContainer} from './DemoContainer'
 import {DemoProps} from './DemoProps'
 
 export class OpenListItemInRight extends React.Component<DemoProps, State, Snapshot> {
@@ -29,13 +30,6 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     }
 
     render() {
-        const rootStyle: CSSProperties = {
-            position: 'relative',
-            width: `${this.props.width}px`,
-            height: `${this.props.height}px`,
-            overflow: `hidden`,
-        }
-
         const listStyle: CSSProperties = {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
@@ -61,7 +55,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
         const openedItemStyle: CSSProperties = {
             width: this.props.width,
             height: this.props.height,
-            backgroundColor: 'black',
+            backgroundColor: 'aliceblue',
             textAlign: 'center',
             zIndex: 10,
         }
@@ -70,10 +64,10 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
             display: 'inline-block',
             fontFamily: 'sans-serif',
             fontSize: isLarge ? 40 : 20,
-            color: 'white',
+            color: 'black',
         })
 
-        return <div style={rootStyle}>
+        return <DemoContainer>
             {this.state.opening ?
                 // must provide key or this div will be reused unexpectedly
                 <div key={'page'} ref={this.item} style={openedItemStyle} onClick={this.onClick}>
@@ -85,7 +79,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
                             id === 5 ?
                                 <div key={id}
                                      ref={this.item}
-                                     style={itemStyle('black')}
+                                     style={itemStyle('aliceblue')}
                                      onClick={this.onClick}
                                 >
                                     <p ref={this.text} style={textStyle(false)}>
@@ -97,7 +91,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
                     }</div>
                 </div>
             }
-        </div>
+        </DemoContainer>
     }
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
