@@ -43,16 +43,17 @@ export class NodeTree {
     }
 
     * DFS(node: Node, filter: TravelFilter = () => NodeTravel.ACCEPT): IterableIterator<Path> {
-        if (filter(node) === NodeTravel.ACCEPT) {
+        if (filter(node) !== NodeTravel.SKIP) {
             yield [node]
         }
-        const children = this.childrenMap.get(node)!
-        for (const child of children) {
-            if (filter(child) === NodeTravel.REJECT) {
-                continue
-            }
-            for (const subpath of this.DFS(child, filter)) {
-                yield [node, ...subpath]
+        if (filter(node) !== NodeTravel.SKIP_CHILDREN) {
+            const children = this.childrenMap.get(node)!
+            for (const child of children) {
+                if (filter(child) !== NodeTravel.REJECT) {
+                    for (const subpath of this.DFS(child, filter)) {
+                        yield [node, ...subpath]
+                    }
+                }
             }
         }
     }
@@ -86,7 +87,8 @@ export class NodeTree {
 export enum NodeTravel {
     ACCEPT,
     SKIP,
-    REJECT
+    REJECT,
+    SKIP_CHILDREN
 }
 
 export type TravelFilter = (path: Readonly<Node>) => NodeTravel
