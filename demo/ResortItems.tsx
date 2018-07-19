@@ -12,7 +12,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
     constructor(props: DemoProps) {
         super(props)
         this.state = {
-            items: new Array(10).fill(nothing).map((_, i) => ({id: i, color: randomcolor()}))
+            items: new Array(10).fill(nothing).map((_, i) => ({id: i, color: randomcolor({luminosity: 'light'})})),
         }
     }
 

@@ -34,7 +34,7 @@ export class AnimatedScroll extends React.Component<DemoProps> {
         const itemStyle = (): CSSProperties => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
-            backgroundColor: `${randomcolor()}`
+            backgroundColor: `${randomcolor({luminosity: 'light'})}`,
         })
 
         return <div style={rootStyle}>

@@ -123,7 +123,7 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     private text = React.createRef<HTMLParagraphElement>()
     private items = new Array(10)
         .fill(nothing)
-        .map((_, id) => ({id, color: randomcolor()}))
+        .map((_, id) => ({id, color: randomcolor({luminosity: 'light'})}))
     private scrollTop = 0
 
     private onClick = () => {
