@@ -21,9 +21,9 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
             this.scrollTop = ref.scrollTop
             tweenExit(ref, from => ({...from, x: from.x - from.width, opacity: 0}), {duration: 300})
         })
-        assume(this.item.current, ref =>
-            tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
-        )
+        assume(this.item.current, ref => {
+            tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}).catch(e => {}) // TODO
+        })
 
         return {item, text}
     }
