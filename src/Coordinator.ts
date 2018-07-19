@@ -14,13 +14,14 @@ class Coordinator {
         this.tree.insert(intent.element)
         this.intents.set(intent.element, intent)
 
-        const paths = this.tree.DFS(intent.element, element =>
-            element === intent.element ?
+        const paths = this.tree.DFS(intent.element, node => {
+            const nodeIntent = this.intents.get(node as Tweenable)!
+            return node === intent.element ?
                 NodeTravel.SKIP :
-                this.intents.get(element as Tweenable)!.fixed ?
-                    NodeTravel.ACCEPT :
-                    NodeTravel.SKIP,
-        )
+                nodeIntent.fixed ?
+                    NodeTravel.SKIP_CHILDREN :
+                    NodeTravel.SKIP
+        })
 
         const rootCompensated = (child: Outline) => compensate(intent.origin, intent.diff, child)
 
@@ -37,7 +38,7 @@ class Coordinator {
                             currIntent.origin,
                             currIntent.diff,
                             child,
-                        )
+                        ),
                     )
                 },
                 rootCompensated,
