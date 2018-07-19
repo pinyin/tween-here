@@ -18,10 +18,11 @@ export class OpenListItem extends React.Component<DemoProps, State, Snapshot> {
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
         const text = assume(this.text.current, ref => getTweenState(ref))
-        assume(this.list.current, ref => {
+        if (this.list.current) {
+            const ref = this.list.current
             tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300})
             this.scrollTop = ref.scrollTop
-        })
+        }
 
         return {item, text}
     }
@@ -92,15 +93,18 @@ export class OpenListItem extends React.Component<DemoProps, State, Snapshot> {
     }
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
-        assume(this.text.current, ref =>
-            tweenHere(ref, snapshot.text, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
-        )
-        assume(this.item.current, ref =>
-            tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
-        )
-        assume(this.list.current, ref => {
+        if (this.text.current) {
+            const ref = this.text.current
+            tweenHere(ref, snapshot.text, {duration: 400, easing: [0.645, 0.045, 0.355, 1]})
+        }
+        if (this.item.current) {
+            const ref = this.item.current
+            tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]})
+        }
+        if (this.list.current) {
+            const ref = this.list.current
             ref.scrollTop = this.scrollTop
-        })
+        }
     }
 
     private list = React.createRef<HTMLDivElement>()
