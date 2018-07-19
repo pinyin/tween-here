@@ -8,7 +8,7 @@ import {tweenHere} from '../src/tweenHere'
 import {TweenState} from '../src/TweenState'
 import {DemoProps} from './DemoProps'
 
-export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
+export class OpenListItemInRight extends React.Component<DemoProps, State, Snapshot> {
     constructor(props: DemoProps) {
         super(props)
         this.state = {opening: false}
@@ -16,17 +16,15 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
 
     getSnapshotBeforeUpdate(): Snapshot {
         const item = assume(this.item.current, ref => getTweenState(ref))
+        const text = assume(this.text.current, ref => getTweenState(ref))
         assume(this.container.current, ref =>
+            tweenExit(ref, from => ({...from, x: from.x - from.width, opacity: 0}), {duration: 300}),
+        )
+        assume(this.item.current, ref =>
             tweenExit(ref, from => ({...from, opacity: 0}), {duration: 300}),
         )
-        assume(this.childText.current, ref =>
-            this.childTextSnapshot = getTweenState(ref),
-        )
-        assume(this.pageText.current, ref =>
-            this.pageTextSnapshot = getTweenState(ref),
-        )
 
-        return {item}
+        return {item, text}
     }
 
     render() {
@@ -41,7 +39,7 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
             WebkitOverflowScrolling: 'touch',
-            overflowX: 'hidden',
+            overflowX: 'visible',
             overflowY: 'scroll',
             willChange: 'transform',
             overflowAnchor: 'none',
@@ -78,18 +76,18 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
             {this.state.opening ?
                 // must provide key or this div will be reused unexpectedly
                 <div key={'page'} ref={this.item} style={openedItemStyle} onClick={this.onClick}>
-                    <p ref={this.pageText} style={textStyle(true)}> Click to Close Page </p>
+                    <p ref={this.text} style={textStyle(true)}> Click to Close Page </p>
                 </div> :
                 <div key={'container'} ref={this.container} style={containerStyle}>
                     <div style={contentStyle}>{
                         this.items.map(({id, color}) =>
-                            id === 3 ?
+                            id === 5 ?
                                 <div key={id}
                                      ref={this.item}
                                      style={itemStyle('black')}
                                      onClick={this.onClick}
                                 >
-                                    <p ref={this.childText} style={textStyle(false)}>
+                                    <p ref={this.text} style={textStyle(false)}>
                                         Click to Open Item
                                     </p>
                                 </div> :
@@ -102,24 +100,25 @@ export class ParentChild extends React.Component<DemoProps, State, Snapshot> {
     }
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
-        assume(this.childText.current, ref =>
-            tweenHere(ref, this.pageTextSnapshot, {fixed: true, duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
-        )
-        assume(this.pageText.current, ref =>
-            tweenHere(ref, this.childTextSnapshot, {fixed: true, duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
+        assume(this.text.current, ref =>
+            tweenHere(ref, snapshot.text, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
         assume(this.item.current, ref =>
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]}),
         )
+        if (prevState.opening && !this.state.opening) {
+            assume(this.container.current, ref =>
+                tweenHere(ref, snapshot => ({...snapshot, x: snapshot.x - snapshot.width}), {
+                    duration: 400,
+                    easing: [0.645, 0.045, 0.355, 1],
+                }),
+            )
+        }
     }
-
-    private childText = React.createRef<HTMLParagraphElement>()
-    private childTextSnapshot: Maybe<TweenState>
-    private pageText = React.createRef<HTMLParagraphElement>()
-    private pageTextSnapshot: Maybe<TweenState>
 
     private container = React.createRef<HTMLDivElement>()
     private item = React.createRef<HTMLDivElement>()
+    private text = React.createRef<HTMLParagraphElement>()
     private items = new Array(10)
         .fill(nothing)
         .map((_, id) => ({id, color: randomcolor()}))
@@ -135,4 +134,5 @@ type State = {
 
 type Snapshot = {
     item: Maybe<TweenState>
+    text: Maybe<TweenState>
 }
