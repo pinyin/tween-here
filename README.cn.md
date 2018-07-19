@@ -71,6 +71,7 @@ async function tweenHere(
     params?: {
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
+        fixed?: boolean,
     }
 ): Promise<void> 
 
@@ -81,6 +82,7 @@ async function tweenExit(
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
         container?: Element,
+        fixed?: boolean,
     }
 ): Promise<void> 
 ```
@@ -104,7 +106,7 @@ type TweenState = {
 ```typescript jsx
 getTweenState(element: HTMLElement): TweenState
 ```
-[通过把这个函数的返回值传递给`tweenHere`](./demo/ParentChild.tsx)，你可以轻松让一个元素从另一个元素的位置平滑出现，从而创造出这两个元素是同一个元素的视觉效果。
+[通过把这个函数的返回值传递给`tweenHere`](demo/OpenListItem.tsx)，你可以轻松让一个元素从另一个元素的位置平滑出现，从而创造出这两个元素是同一个元素的视觉效果。
 
 
 总之，如果你希望一个元素平滑过渡到它的当前位置，使用`tweenHere`。如果你希望一个元素平滑地消失，使用`tweenExit`。

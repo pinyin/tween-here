@@ -71,6 +71,7 @@ async function tweenHere(
     params?: {
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
+        fixed?: boolean,
     }
 ): Promise<void> 
 
@@ -81,6 +82,7 @@ async function tweenExit(
         duration?: number | ((from: TweenState, to: TweenState) => number),
         easing?: [number, number, number, number],
         container?: Element,
+        fixed?: boolean,
     }
 ): Promise<void> 
 ```
@@ -105,7 +107,7 @@ For convenience, this library provides a helper function, `getTweenState`, to co
 getTweenState(element: HTMLElement): TweenState
 ```
 
-[By passing the return value from this helper function to `tweenHere`](./demo/ParentChild.tsx), you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
+[By passing the return value from this helper function to `tweenHere`](demo/OpenListItem.tsx), you can easily make an element appear smoothly from the position of another element, constructing a visual effect that they are the same element.
 
 In general, use `tweenHere` when you want an element to move to its current state smoothly, use `tweenExit` on an element when you know the element will be detached from document and want it to disappear smoothly.
 
