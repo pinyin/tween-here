@@ -31,7 +31,7 @@ export async function tweenExit(
         duration: 200,
         container: element.parentElement,
         easing: [0, 0, 1, 1],
-        fixed: false,
+        fixed: true,
         ...params,
     }
 

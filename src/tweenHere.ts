@@ -28,7 +28,7 @@ export async function tweenHere(
     const fullParams: TweenHereParams = {
         duration: 200,
         easing: [0, 0, 1, 1],
-        fixed: false,
+        fixed: true,
         ...params,
     }
 
