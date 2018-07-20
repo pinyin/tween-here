@@ -1,5 +1,6 @@
 import {existing} from '@pinyin/maybe'
 
+// TODO over optimize
 export class NodeTree {
     insert(node: Node): void {
         if (this.has(node)) {

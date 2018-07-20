@@ -117,8 +117,6 @@ getTweenState(element: HTMLElement): TweenState
 
 把对DOM的读写操作统一调度在microtask中，因此可以随时开始动画，不必担心触发reflow。
 
-自动同步嵌套动画。
-
 ## 限制
 
 被动画的元素的`transform` `opacity`和`transition`属性会被覆盖。

@@ -117,8 +117,6 @@ Achieve a high FPS by using FLIP technique.
 
 Schedule all DOM operations into microtasks, so there should be little overhead from DOM reflow.
 
-Nested animations are automatically coordinated.
-
 ## Limits
 
 The animated element's `transform` `opacity` and `transition` style properties are not preserved.

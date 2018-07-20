@@ -25,7 +25,7 @@ render(<div>
         <SideDrawer width={375} height={667}/>
     </div>
     <a href={'https://github.com/pinyin/tween-here/blob/master/demo'}>
-        Source Code
+        View Source | 打开源代码
     </a>
 </div>, root)
 
