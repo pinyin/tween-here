@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/pinyin/tween-here.svg?branch=master)](https://travis-ci.org/pinyin/tween-here)
 
-A UI animation library designed for modern JS frameworks.
+An UI animation library designed for modern JS frameworks.
 
 [Open Demo (better for large screen)](http://pinyin.github.io/tween-here)
 
