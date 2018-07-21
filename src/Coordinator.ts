@@ -1,5 +1,6 @@
 import {nextFrame} from '@pinyin/frame'
 import {compensate, Outline, toCSS, transform} from '@pinyin/outline'
+import {emptyIntent} from './emptyIntent'
 import {NodeTravel, NodeTree} from './NodeTree'
 import {TransformIntent} from './TransformIntent'
 import {Tweenable} from './Tweenable'
@@ -14,25 +15,26 @@ class Coordinator {
         this.tree.insert(intent.element)
         this.intents.set(intent.element, intent)
 
-        const paths = this.tree.DFS(intent.element, node => {
-            const nodeIntent = this.intents.get(node as Tweenable)!
+        const descendants = () => this.tree.DFS(intent.element, path => {
+            const node = path[path.length - 1] as Tweenable
+            const nodeIntent = this.intents.get(node) || emptyIntent(node)
             return node === intent.element ?
-                NodeTravel.SKIP :
+                NodeTravel.SKIP_SELF :
                 nodeIntent.fixed ?
                     NodeTravel.SKIP_CHILDREN :
-                    NodeTravel.SKIP
+                    NodeTravel.SKIP_SELF
         })
 
-        const rootCompensated = (child: Outline) => compensate(intent.origin, intent.diff, child)
+        for (const path of descendants()) { // TODO extract to @pinyin/outline
+            const pathToIntent = path.slice(0, path.length - 1) as Array<Tweenable>
+            const child = path[path.length - 1] as Tweenable
 
-        for (const path of paths as IterableIterator<Array<Tweenable>>) {
-            const pathCompensated = path.reduce(
-                (acc, curr) => {
-                    const currIntent = this.intents.get(curr)!
-                    currIntent.element.style.transition = intent.element.style.transition
+            const compensateToIntent = pathToIntent.reduce(
+                (compensateByPath, curr) => {
+                    const currIntent = this.intents.get(curr) || emptyIntent(curr)
 
                     return (child: Outline) => transform(
-                        acc(currIntent.origin),
+                        compensateByPath(currIntent.origin),
                         currIntent.diff,
                         compensate(
                             currIntent.origin,
@@ -41,16 +43,18 @@ class Coordinator {
                         ),
                     )
                 },
-                rootCompensated,
+                (child: Outline) => compensate(intent.origin, intent.diff, child),
             )
 
-            const child = path[path.length - 1]
             const childIntent = this.intents.get(child)!
-            child.style.transform = toCSS(transform(pathCompensated(childIntent.origin), childIntent.diff))
+            child.style.transform = toCSS(transform(
+                compensateToIntent(childIntent.origin),
+                childIntent.diff,
+            ))
         }
     }
 
-    private readonly intents: Map<Tweenable, TransformIntent> = new Map()
+    private readonly intents: Map<Node, TransformIntent> = new Map()
     private readonly tree = new NodeTree()
 
     private async scheduleCleanup(): Promise<void> {

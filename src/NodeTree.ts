@@ -3,13 +3,9 @@ import {existing} from '@pinyin/maybe'
 // TODO over optimize
 export class NodeTree {
     insert(node: Node): void {
-        if (this.has(node)) {
-            throw new UnexpectedStructure()
-        }
-
         const findParent = (): Node | undefined => {
-            const ancestorPaths = this.DFS(document.body, candidate =>
-                candidate.contains(node) ?
+            const ancestorPaths = this.DFS(document.body, path =>
+                path[path.length - 1].contains(node) ?
                     NodeTravel.ACCEPT :
                     NodeTravel.REJECT,
             )
@@ -43,18 +39,28 @@ export class NodeTree {
         this.childrenMap.set(node, children)
     }
 
-    * DFS(node: Node, filter: TravelFilter = () => NodeTravel.ACCEPT): IterableIterator<Path> {
-        if (filter(node) !== NodeTravel.SKIP) {
-            yield [node]
+    ancestors(node: Node): Array<Node> {
+        const result: Array<Node> = []
+        for (let parent = this.parentMap.get(node);
+             existing(parent);
+             parent = this.parentMap.get(parent)) {
+            result.unshift(parent)
         }
-        if (filter(node) !== NodeTravel.SKIP_CHILDREN) {
+        return result
+    }
+
+    * DFS(node: Node, filter: TravelFilter = () => NodeTravel.ACCEPT, ancestors: ReadonlyArray<Node> = []): IterableIterator<Path> {
+        const path = [...ancestors, node]
+        if (filter(path) === NodeTravel.REJECT) {
+            return
+        }
+        if (filter(path) !== NodeTravel.SKIP_SELF) {
+            yield path
+        }
+        if (filter(path) !== NodeTravel.SKIP_CHILDREN) {
             const children = this.childrenMap.get(node)!
             for (const child of children) {
-                if (filter(child) !== NodeTravel.REJECT) {
-                    for (const subpath of this.DFS(child, filter)) {
-                        yield [node, ...subpath]
-                    }
-                }
+                yield* this.DFS(child, filter, [...path, child])
             }
         }
     }
@@ -87,12 +93,12 @@ export class NodeTree {
 
 export enum NodeTravel {
     ACCEPT,
-    SKIP,
+    SKIP_SELF,
     REJECT,
     SKIP_CHILDREN
 }
 
-export type TravelFilter = (path: Readonly<Node>) => NodeTravel
+export type TravelFilter = (path: ReadonlyArray<Node>) => NodeTravel
 export type Path = Array<Node>
 
 export class UnexpectedStructure extends Error {}
