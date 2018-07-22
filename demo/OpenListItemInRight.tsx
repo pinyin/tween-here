@@ -100,13 +100,13 @@ export class OpenListItemInRight extends React.Component<DemoProps, State, Snaps
     }
 
     componentDidUpdate(prevProps: DemoProps, prevState: State, snapshot: Snapshot) {
-        if (this.text.current) {
-            const ref = this.text.current
-            tweenHere(ref, snapshot.text, {duration: 400, easing: [0.645, 0.045, 0.355, 1]})
-        }
         if (this.item.current) {
             const ref = this.item.current
             tweenHere(ref, snapshot.item, {duration: 400, easing: [0.645, 0.045, 0.355, 1]})
+        }
+        if (this.text.current) {
+            const ref = this.text.current
+            tweenHere(ref, snapshot.text, {duration: 400, easing: [0.645, 0.045, 0.355, 1]})
         }
         if (prevState.opening && !this.state.opening) {
             if (this.list.current) {
