@@ -3,25 +3,7 @@ import {existing} from '@pinyin/maybe'
 // TODO over optimize
 export class NodeTree {
     insert(node: Node): void {
-        const findParent = (): Node | undefined => {
-            const ancestorPaths = this.DFS(document.body, path =>
-                path[path.length - 1].contains(node) ?
-                    NodeTravel.ACCEPT :
-                    NodeTravel.REJECT,
-            )
-
-            let parentPath: Array<Node> = []
-            for (const path of ancestorPaths) {
-                if (path.length < parentPath.length) {
-                    break
-                }
-                parentPath = path
-            }
-
-            return parentPath[parentPath.length - 1]
-        }
-
-        const parent = findParent()
+        const parent = this.findParent(node)
         const children = new Set<Node>()
 
         const prevParent = this.parentMap.get(node)
@@ -44,10 +26,28 @@ export class NodeTree {
         this.childrenMap.set(node, children)
     }
 
+    findParent(node: Node): Node | undefined {
+        const ancestorPaths = this.DFS(document.body, path =>
+            path[path.length - 1].contains(node) ?
+                NodeTravel.ACCEPT :
+                NodeTravel.REJECT,
+        )
+
+        let parentPath: Array<Node> = []
+        for (const path of ancestorPaths) {
+            if (path.length < parentPath.length) {
+                break
+            }
+            parentPath = path
+        }
+
+        return parentPath[parentPath.length - 1]
+    }
+
     ancestors(node: Node): Array<Node> {
         const result: Array<Node> = []
         for (let parent = this.parentMap.get(node);
-             existing(parent);
+             parent;
              parent = this.parentMap.get(parent)) {
             result.unshift(parent)
         }

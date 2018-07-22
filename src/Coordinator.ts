@@ -25,9 +25,12 @@ class Coordinator {
                 .reverse()
                 .findIndex(intent => intent.fixed)
         const pathToNearestFixed = path.slice(nearestFixedIndex, path.length)
-        const intentToNearestFixed = this.compensateByPath(pathToNearestFixed, intent.origin)
+        const intentToNearestFixed = transform(
+            this.compensateByPath(pathToNearestFixed, intent.origin),
+            intent.diff,
+        )
         if (intent.fixed) {
-            intent.element.style.transform = toCSS(transform(intentToNearestFixed, intent.diff))
+            intent.element.style.transform = toCSS(intentToNearestFixed)
         }
 
         const descendants = () => this.tree.DFS(intent.element, path => {
@@ -49,10 +52,7 @@ class Coordinator {
             child.style.transform = toCSS(transform(
                 intent.fixed ?
                     identity() :
-                    transform(
-                        intentToNearestFixed,
-                        intent.diff,
-                    ),
+                    intentToNearestFixed,
                 childToIntent,
                 childIntent.diff,
             ))

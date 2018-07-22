@@ -43,9 +43,9 @@
   },
   "dependencies": {
     "@pinyin/dom": "^0.0.12",
-    "@pinyin/frame": "^0.0.14",
+    "@pinyin/frame": "^0.0.15",
     "@pinyin/maybe": "^0.0.9",
-    "@pinyin/outline": "0.0.16",
+    "@pinyin/outline": "0.0.17",
     "@pinyin/types": "^0.0.45",
     "synchronous-promise": "^2.0.5",
     "tslib": "^1.9.3"
