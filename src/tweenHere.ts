@@ -1,4 +1,4 @@
-import {nextFrame, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
+import {nextTask, OptimizeFor, readPhase, writePhase} from '@pinyin/frame'
 import {existing, Maybe, notExisting} from '@pinyin/maybe'
 import {intermediate, isSimilarOutline, toCSS} from '@pinyin/outline'
 import {ms, nothing} from '@pinyin/types'
@@ -69,7 +69,7 @@ export async function tweenHere(
         } catch {}
     }
 
-    await nextFrame()
+    await nextTask()
     await writePhase(OptimizeFor.PERFORMANCE)
     if (lock.get(element) !== releaseLock) {
         releaseLock()
