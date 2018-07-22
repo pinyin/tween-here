@@ -3,9 +3,6 @@ import {existing} from '@pinyin/maybe'
 // TODO over optimize
 export class NodeTree {
     insert(node: Node): void {
-        if (this.childrenMap.has(node)) {
-            throw new UnexpectedStructure()
-        }
         const findParent = (): Node | undefined => {
             const ancestorPaths = this.DFS(document.body, path =>
                 path[path.length - 1].contains(node) ?
@@ -26,6 +23,11 @@ export class NodeTree {
 
         const parent = findParent()
         const children = new Set<Node>()
+
+        const prevParent = this.parentMap.get(node)
+        if (existing(prevParent) && parent !== prevParent) {
+            throw new UnexpectedStructure()
+        }
 
         if (existing(parent)) {
             this.parentMap.set(node, parent)
