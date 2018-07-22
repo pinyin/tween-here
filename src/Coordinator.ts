@@ -8,7 +8,9 @@ import {Tweenable} from './Tweenable'
 class Coordinator {
     coordinate(intent: TransformIntent): void {
         this.adjustChildren(intent)
-        this.scheduleCleanup()
+        if (!this.cleanupScheduled) {
+            this.scheduleCleanup()
+        }
     }
 
     private adjustChildren(intent: TransformIntent): void {
@@ -83,15 +85,18 @@ class Coordinator {
     private readonly tree = new NodeTree()
 
     private async scheduleCleanup(): Promise<void> {
+        this.cleanupScheduled = true
         await nextFrame()
-
-        if (this.tree.isEmpty() && this.intents.size === 0) {
+        if (!this.cleanupScheduled) {
             return
         }
 
         this.intents.clear()
         this.tree.clear()
+        this.cleanupScheduled = false
     }
+
+    private cleanupScheduled: boolean = false
 }
 
 export const COORDINATOR = new Coordinator()
