@@ -62,8 +62,6 @@ export async function tweenExit(
     }
     const isParentChanged = container !== element.parentElement
     const snapshot = snapshotNode(element, isParentChanged)
-    // @ts-ignore // FIXME
-    snapshot.style.willChange = 'transform, opacity'
     snapshot.style.position = `absolute` // TODO more optimization such as contain
 
     await new SynchronousPromise(

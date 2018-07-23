@@ -34,8 +34,6 @@ export async function tweenHere(
 
     const fixed = fullParams.fixed
     const easing = fullParams.easing
-    // @ts-ignore // FIXME
-    element.style.willChange = 'transform, opacity'
     await readPhase(OptimizeFor.LATENCY)
     const to = getOriginalTweenState(element)
     const snapshot = getTweenState(element)
