@@ -51,18 +51,17 @@ export class NodeTree {
         return result
     }
 
-    * DFS(node: Node, filter: TravelFilter = () => Accept, ancestors: ReadonlyArray<Node> = []): IterableIterator<Path> {
-        const path = [...ancestors, node]
-        const skipSpec = filter(path)
+    * DFS(node: Node, filter: TravelFilter = () => Accept, nodePath: Path = [node]): IterableIterator<Path> {
+        const skipSpec = filter(nodePath)
         if (!(skipSpec & Skip.SELF)) {
-            yield path
+            yield nodePath
         }
         if (!(skipSpec & Skip.CHILDREN)) {
             const children = this.childrenMap.get(node)!
             for (const child of children) {
-                const nextPath = [...path, child]
-                yield* this.DFS(child, filter, nextPath)
-                if (filter(nextPath) & Skip.ADJACENTS) {
+                const childPath = [...nodePath, child]
+                yield* this.DFS(child, filter, childPath)
+                if (filter(childPath) & Skip.ADJACENTS) {
                     break
                 }
             }
@@ -105,6 +104,6 @@ export enum Skip {
 }
 
 export type TravelFilter = (path: ReadonlyArray<Node>) => Skip
-export type Path = Array<Node>
+export type Path = ReadonlyArray<Node>
 
 export class UnexpectedStructure extends Error {}
