@@ -62,7 +62,7 @@ export class NodeTree {
             for (const child of children) {
                 const nextPath = [...path, child]
                 yield* this.DFS(child, filter, nextPath)
-                if (skipSpec & Skip.ADJACENTS) {
+                if (filter(nextPath) & Skip.ADJACENTS) {
                     break
                 }
             }
