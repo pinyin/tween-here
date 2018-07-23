@@ -84,6 +84,10 @@ export async function tweenExit(
     await readPhase(OptimizeFor.LATENCY)
     let origin = getOriginalTweenState(snapshot)
     await writePhase(OptimizeFor.LATENCY)
+    if (!document.body.contains(snapshot)) {
+        releaseLock()
+        return
+    }
     snapshot.style.transition = `none`
     const inverse = intermediate(origin, from)
     snapshot.style.transform = toCSS(inverse)
