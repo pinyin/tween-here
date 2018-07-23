@@ -80,6 +80,7 @@ export class SideDrawer extends React.Component<DemoProps, State> {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
+                willChange: 'transform, opacity',
             },
             ...this.state.opening ?
                 {

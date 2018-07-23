@@ -43,6 +43,7 @@ export class ResortItems extends React.Component<DemoProps, State, Snapshot> {
         const itemStyle = (color: string): CSSProperties => ({
             width: `${this.props.width}px`,
             height: `${this.props.height / 6}px`,
+            willChange: 'transform, opacity',
             backgroundColor: `${color}`
         })
 
