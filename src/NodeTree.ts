@@ -29,19 +29,16 @@ export class NodeTree {
     findParent(node: Node): Node | undefined {
         const ancestorPaths = this.DFS(document.body, path =>
             path[path.length - 1].contains(node) ?
-                NodeTravel.ACCEPT :
-                NodeTravel.REJECT,
+                Skip.ADJACENTS :
+                Skip.SUBTREE,
         )
 
-        let parentPath: Array<Node> = []
+        let parentPath: Node | undefined
         for (const path of ancestorPaths) {
-            if (path.length < parentPath.length) {
-                break
-            }
-            parentPath = path
+            parentPath = path[path.length - 1]
         }
 
-        return parentPath[parentPath.length - 1]
+        return parentPath
     }
 
     ancestors(node: Node): Array<Node> {
@@ -54,18 +51,20 @@ export class NodeTree {
         return result
     }
 
-    * DFS(node: Node, filter: TravelFilter = () => NodeTravel.ACCEPT, ancestors: ReadonlyArray<Node> = []): IterableIterator<Path> {
+    * DFS(node: Node, filter: TravelFilter = () => Accept, ancestors: ReadonlyArray<Node> = []): IterableIterator<Path> {
         const path = [...ancestors, node]
-        if (filter(path) === NodeTravel.REJECT) {
-            return
-        }
-        if (filter(path) !== NodeTravel.SKIP_SELF) {
+        const skipSpec = filter(path)
+        if (!(skipSpec & Skip.SELF)) {
             yield path
         }
-        if (filter(path) !== NodeTravel.SKIP_CHILDREN) {
+        if (!(skipSpec & Skip.CHILDREN)) {
             const children = this.childrenMap.get(node)!
             for (const child of children) {
-                yield* this.DFS(child, filter, [...path, child])
+                const nextPath = [...path, child]
+                yield* this.DFS(child, filter, nextPath)
+                if (skipSpec & Skip.ADJACENTS) {
+                    break
+                }
             }
         }
     }
@@ -96,14 +95,16 @@ export class NodeTree {
     private readonly childrenMap: Map<Node, Set<Node>> = new Map([[document.body, new Set()]])
 }
 
-export enum NodeTravel {
-    ACCEPT,
-    SKIP_SELF,
-    REJECT,
-    SKIP_CHILDREN
+export const Accept = 0
+
+export enum Skip {
+    SELF = 1,
+    CHILDREN = 2,
+    ADJACENTS = 4,
+    SUBTREE = SELF | CHILDREN,
 }
 
-export type TravelFilter = (path: ReadonlyArray<Node>) => NodeTravel
+export type TravelFilter = (path: ReadonlyArray<Node>) => Skip
 export type Path = Array<Node>
 
 export class UnexpectedStructure extends Error {}

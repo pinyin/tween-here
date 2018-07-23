@@ -1,7 +1,7 @@
 import {nextFrame} from '@pinyin/frame'
 import {compensate, identity, Outline, toCSS, Transform, transform} from '@pinyin/outline'
 import {emptyIntent} from './emptyIntent'
-import {NodeTravel, NodeTree} from './NodeTree'
+import {NodeTree, Skip} from './NodeTree'
 import {TransformIntent} from './TransformIntent'
 import {Tweenable} from './Tweenable'
 
@@ -37,10 +37,10 @@ class Coordinator {
             const node = path[path.length - 1] as Tweenable
             const nodeIntent = this.intents.get(node) || emptyIntent(node)
             return node === intent.element ?
-                NodeTravel.SKIP_SELF :
+                Skip.SELF :
                 nodeIntent.fixed ?
-                    NodeTravel.SKIP_CHILDREN :
-                    NodeTravel.SKIP_SELF
+                    Skip.CHILDREN :
+                    Skip.SELF
         })
         for (const path of descendants()) {
             const child = path[path.length - 1] as Tweenable
